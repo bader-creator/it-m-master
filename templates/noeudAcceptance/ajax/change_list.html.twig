@@ -1,0 +1,189 @@
+<script type="text/javascript">
+
+
+ var current_value = $("#noeud_acceptance_typeAcceptance").val();
+
+    if(current_value!="" && current_value == 0 ){ // site
+
+        $(".div_site").removeClass("d-none");
+
+    }else {
+         $(".div_site").addClass("d-none");
+        
+    }
+
+    if(current_value == 1){ // armoire
+
+        $(".div_armoire").removeClass("d-none");
+
+    }else {
+        $(".div_armoire").addClass("d-none");
+        
+    }
+
+
+$("#noeud_acceptance_typeAcceptance").change(function(){
+
+    var current_value = $(this).val();
+
+     if(current_value!="" && current_value == 0 ){ // site
+
+        $(".div_site").removeClass("d-none");
+
+    }else {
+         $(".div_site").addClass("d-none");
+        
+    }
+
+    if(current_value == 1){ // armoire
+
+        $(".div_armoire").removeClass("d-none");
+
+    }else {
+        $(".div_armoire").addClass("d-none");
+        
+    }
+
+});
+
+{% if action =="add" or action =="edit" %}
+
+/*-----------------------------------------------------------------------*/
+/*                   start initialisation fiche                         */
+/*-----------------------------------------------------------------------*/
+
+    var list_fiche = $("#noeud_acceptance_fiche");
+
+    $('option', list_fiche).remove();
+
+    var id_type = $("#noeud_acceptance_typeAcceptance").val();
+
+    var id_selected_fiche = "";/*'{#% if noeudAcceptance.fiche %} {{ noeudAcceptance.fiche.id }} {% endif %#}';*/
+
+    if(id_type!=""){
+
+        var url = "{{ path('change_type') }}";
+
+        $.ajax({
+            url: url,
+            data: {id_type: id_type},
+            type: "post",
+            dataType: "json", // Change this according to your response from the server.
+            beforeSend:function(){
+                $(".body_loading").removeClass("d-none");
+
+                $("body").css("opacity",0.4);
+            },
+
+            statusCode: {
+                200: function (response) {
+
+                    var outString='';
+
+                    console.log( response.data);
+
+                    response.data.forEach(function(entry){
+
+                        if(entry['id'] == id_selected_fiche ){
+
+                            outString += '<option value="' + entry['id'] + '" selected>'+ entry['label']+'</option>';
+                        }else{
+
+                            outString += '<option value="' + entry['id'] + '">'+ entry['label']+'</option>';
+                        }
+
+                    });
+
+                    if(response.data.length>0){
+
+                        list_fiche.append('<option value="" >Choisir une fiche</option>');
+
+                        list_fiche.append(outString);
+
+                    }
+
+                }// end 200
+
+            },// end status code
+            complete:function(){
+                $(".body_loading").addClass("d-none");
+                $("body").css("opacity",1);
+            }
+        }); //fin appel ajax
+
+    }
+
+
+    /*-----------------------------------------------------------------------*/
+    /*                   end initialisation fiche                            */
+    /*-----------------------------------------------------------------------*/
+
+    /*-----------------------------------------------------------------------*/
+    /*                     start function change type                        */
+    /*-----------------------------------------------------------------------*/
+
+    $("#noeud_acceptance_typeAcceptance").on('change',function(){
+
+        list_fiche.select2().val("").trigger("change");
+
+        $('option',list_fiche).remove();
+
+        var id_type = $(this).val();
+
+        if(id_type!=""){
+
+            var url = "{{ path('change_type') }}";
+
+            $.ajax({
+                url: url,
+                data: {id_type: id_type},
+                type: "post",
+                dataType: "json", // Change this according to your response from the server.
+                beforeSend:function(){
+                    $(".body_loading").removeClass("d-none");
+
+                    $("body").css("opacity",0.4);
+                },
+
+                statusCode: {
+                    200: function (response) {
+
+                        var outString='';
+
+                        response.data.forEach(function(entry){
+
+                            if(entry['id'] == id_selected_fiche ){
+
+                                outString += '<option value="' + entry['id'] + '" selected>'+ entry['label']+'</option>';
+                            }else{
+
+                                outString += '<option value="' + entry['id'] + '">'+ entry['label']+'</option>';
+                            }
+
+                        });
+
+                        if(response.data.length>0){
+
+                            list_fiche.append('<option value="" >Choisir une fiche</option>');
+
+                            list_fiche.append(outString);
+
+                        }
+
+                    }// end 200
+
+                },// end status code
+                complete:function(){
+                    $(".body_loading").addClass("d-none");
+                    $("body").css("opacity",1);
+                }
+            }); //fin appel ajax
+
+        }
+
+    });
+   
+
+{% endif %}
+
+</script>

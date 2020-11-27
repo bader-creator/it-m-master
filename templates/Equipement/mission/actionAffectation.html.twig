@@ -1,0 +1,126 @@
+{{ form_start(form, {'attr' :{'class' : 'form-disable', 'novalidate': 'novalidate', 'role': 'form'}}) }} 
+
+        <div class="row">
+
+             <div class="col-md-6">
+
+                <div class="form-group m-b-40">
+                 <label>Magasinier </label> : <span class=" text-danger">*</span>
+
+                    {{ form_widget(form.magasinier, {'attr' : {'class':'select2 form-control'}})}}
+
+                    {% if not form.magasinier.vars.valid %}
+
+                        {% for error in form.magasinier.vars.errors  %}
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.magasinier.setRendered %}
+
+                </div>
+            </div> <!-- end div label -->
+
+            <div class="col-md-6">
+
+                <div class="form-group m-b-40">
+                 <label>Livreur </label> : <span class=" text-danger">*</span>
+
+                    {{ form_widget(form.livreur, {'attr' : {'class':'select2 form-control'}})}}
+
+                    {% if not form.livreur.vars.valid %}
+
+                        {% for error in form.livreur.vars.errors  %}
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.livreur.setRendered %}
+
+                </div>
+            </div> <!-- end div label -->
+
+            <div class="col-md-6">
+
+                <div class="form-group m-b-40">
+                 <label>Installateur </label> : <span class=" text-danger">*</span>
+
+                    {{ form_widget(form.installateur, {'attr' : {'class':'select2 form-control'}})}}
+
+                    {% if not form.installateur.vars.valid %}
+
+                        {% for error in form.installateur.vars.errors  %}
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.installateur.setRendered %}
+
+                </div>
+            </div> <!-- end div label -->
+
+            <div class="col-md-6">
+
+                <div class="form-group m-b-40">
+                 <label>Metteur en service </label> : <span class=" text-danger">*</span>
+
+                    {{ form_widget(form.metteurService, {'attr' : {'class':'select2 form-control'}})}}
+
+                    {% if not form.metteurService.vars.valid %}
+
+                        {% for error in form.metteurService.vars.errors  %}
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.metteurService.setRendered %}
+
+                </div>
+            </div> <!-- end div label -->
+
+            <div class="col-md-6">
+
+                <div class="form-group m-b-40">
+                 <label>Acceptateur </label> : <span class=" text-danger">*</span>
+
+                    {{ form_widget(form.acceptateur, {'attr' : {'class':'select2 form-control'}})}}
+
+                    {% if not form.acceptateur.vars.valid %}
+
+                        {% for error in form.acceptateur.vars.errors  %}
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.acceptateur.setRendered %}
+
+                </div>
+            </div> <!-- end div label -->
+
+            
+            
+            
+            <div class="col-md-12">
+               
+                <a   class="btn btn-danger waves-effect pull-left text-white"
+                    {% if action == "addAffectation" %} href="{{ path('mission_page') }}" {% elseif action == "editAffectation" %}
+                     href="{{ path('mission_page',{selected_row:selected_row,search_input:search_input,page:page}) }}" {% endif %}>Annuler
+                </a>
+                
+                {{ form_widget(form.save, {'attr' :{'class':'btn btn-success pull-right'}})}}
+
+            </div><!-- end div action -->
+
+        </div><!-- end div row -->
+
+{{ form_end(form) }}

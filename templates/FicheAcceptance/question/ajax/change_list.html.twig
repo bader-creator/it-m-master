@@ -1,0 +1,39 @@
+<script type="text/javascript">
+
+
+ var current_value = $("#question_type").val();
+
+    if(current_value == 0){ // select
+
+        $(".div_choix").removeClass("d-none");
+
+    }else{
+
+        $(".div_choix").addClass("d-none");
+
+    }
+
+
+
+$("#question_type").change(function(){
+
+    var current_value = $(this).val();
+
+    if(current_value == 0){ // select
+
+        $(".div_choix").removeClass("d-none");
+
+    }else{
+
+        $(".div_choix").addClass("d-none");
+
+        var list_choix = $("#question_choix");
+
+        $('option',list_choix).remove();
+
+    }
+
+});
+   
+
+</script>

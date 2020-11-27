@@ -1,0 +1,328 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} IT&M - Stock {% endblock %}
+
+
+{% block body %}
+    {{ parent() }}
+
+    {% if action == "edit" or action == "add" %}
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{% if action =="add" %} Nouvel {% else %} Modifier {% endif %} Enregistrement</h5>
+                </div>
+                <div class="card-body">
+                    {{ include('Equipement/mission/action.html.twig') }}
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    
+    {% if action == "editMateriel" or action == "addMateriel" %}
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{% if action =="addMateriel" %} Nouvel {% else %} Modifier {% endif %} Enregistrement</h5>
+                </div>
+                <div class="card-body">
+                    {{ include('Equipement/mission/actionMateriel.html.twig') }}
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+
+       {% if action == "editAffectation" or action == "addAffectation" %}
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{% if action =="addAffectation" %} Nouvel {% else %} Modifier {% endif %} Enregistrement</h5>
+                </div>
+                <div class="card-body">
+                    {{ include('Equipement/mission/actionAffectation.html.twig') }}
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+    
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="bug-list-search-content">
+                        <form method="get" action="">
+                            <div class="position-relative">
+                                <input type="search" id="search-contacts" name="search_input" value="{{ app.request.get('search_input')}}" class="form-control" placeholder="Recherche avancée...">
+                                <div class="form-control-position">
+                                    <i class="fa fa-search text-size-base text-muted la-rotate-270"></i>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 >Liste des missions <span class="badge badge badge-info badge-pill mr-2">{{ missions.getTotalItemCount }}</span></h4>
+                    <div class="heading-elements mt-0">
+                        {% if app.user and is_granted('ROLE_AJOUTER_MISSION') %}
+                            {# {% if test !=  false %}  #}
+                            <a class="btn btn-cyan btn-sm" href="{{ path('add_mission_page') }}"><i class="fa fa-plus mr-0"></i>
+                                nouvel enregistrement
+                            </a>
+                            {# {% endif %}  #}
+                        {% endif %}
+                        <a class="btn btn-warning btn-sm" href="{{ path('mission_page') }}" title="Actualiser"><i class="fa fa-refresh"></i></a>
+                    </div> 
+                </div>  <!-- end card-header -->
+                <br><br>
+                    <div class="card-body">
+                        {% if not missions|length %}
+
+                            <div class="alert alert-info" role="alert" style="padding:8px;">
+                                <i class="icon fa fa-info-circle"></i> <span id="content-message"> Aucun enregistrement trouvé</span>
+                            </div>
+
+                        {% else %}
+                           {% for mission in missions %}
+
+                                <div class="card mb-3" style="max-width: 100rem;">
+                                
+                                    <div class="card-header bg-transparent" style="border-bottom:solid 1px black;">
+
+                                        <strong>{{ mission.site.name }}</strong>
+
+                                    {% if app.user and (is_granted('ROLE_MODIFIER_MISSION') or is_granted('ROLE_SUPPRIMER_MISSION') or is_granted('ROLE_AJOUTER_MATERIEL') ) %}
+                                        {% if app.user and is_granted('ROLE_MODIFIER_MISSION') %}
+                                              {% if test !=  true %} 
+                                                <a class="btn btn-linkedin btn-sm pull-right"   href="{{ path('edit_mission_page',{id:mission.id,search_input:search_input,page:page}) }}" title="Modifier">
+                                                    <i class="fa fa-pencil-square-o text-white"></i>
+                                                </a>
+                                              {% endif %}
+                                        {% endif %}
+                                        {% if app.user and is_granted('ROLE_SUPPRIMER_MISSION') %}
+                                                <a class="btn btn-danger btn-sm pull-right"  style="margin-right:5px;" id="delete_data" data-id="{{ mission.id }}" data-toggle="modal" data-target="#modal_delete_data" title="Supprimer">
+                                                    <i class="fa fa-trash-o text-white"></i>
+                                                </a>
+                                        {% endif %}
+
+                                        {% if app.user and is_granted('ROLE_AJOUTER_MATERIEL') %}
+                                       
+                                                <a class="btn btn-success btn-sm pull-right" href="{{ path('mat_page',{id:mission.id,search_input:search_input,page:page}) }}"  style="margin-right:5px"><i class="fa fa-plus " title="Ajouter Matériels"></i>
+                                               </a>
+                                        {% endif %}
+
+                                        {% endif %}
+                                    
+                                       
+                                    </div> 
+ {# table produit  #}
+
+ 
+                              <div class="row">
+                                  <div class="col">
+                                        <div class="table-responsive m-t-40">
+                                              <table class="display nowrap table table-hover table-bordered" cellspacing="0" width="100%" style="font-size:13.5px;">
+                                                    <thead>
+                                                    <tr>
+                                                        
+                                                        <th style="font-weight: bold;">Nom produit</th>
+                                                        <th style="font-weight: bold;">Quantité sortie</th>
+                                                       
+                                                        
+                                                        {% if app.user and (is_granted('ROLE_MODIFIER_MATERIEL') or is_granted('ROLE_SUPPRIMER_MATERIEL')) %}
+                                                        <th style="text-align:center;">Actions</th>
+                                                        {% endif %}
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody style="line-height:40px;">
+
+                                                {% for material in mission.materiels %}
+                                                    <tr data-id="{{ material.id }}" {% if material.id == selected_row %} style="Background-color:#dcdfdc;" {% endif %}>
+                                                            <td >  {% if material.stock is not null %}{{ material.stock.nomProduit  }}  {% endif %}</td>
+                                                            <td >  {{ material.quantiteSortie }}</td>
+                                                            {% if app.user and (is_granted('ROLE_MODIFIER_MATERIEL') or is_granted('ROLE_SUPPRIMER_MATERIEL')) %}
+                                                            <td style="text-align: center; min-width:150px; width:120px;">
+                                                                {% if app.user and is_granted('ROLE_MODIFIER_MATERIEL') %}                      
+
+     
+                                                                 {% if test !=  true %}     
+                                                                <a class="btn btn-linkedin btn-sm"  href="{{ path('edit_materiel_page',{id:material.id,id_mission:mission.id,search_input:search_input,page:page}) }}" title="Modifier"> 
+                                                                     <i class="fa fa-pencil-square-o text-white"></i>
+                                                                </a>
+                                                                {% endif %}
+
+                                                                {% endif %}
+                                                                {% if app.user and is_granted('ROLE_SUPPRIMER_MATERIEL') %}
+                                                                <a class="btn btn-danger btn-sm" id="delete_materiel_data" data-id="{{material.id }}" data-toggle="modal" data-target="#modal_delete_data" title="Supprimer">
+                                                                    <i class="fa fa-trash-o text-white"></i>
+                                                                </a>
+                                                                {% endif %}
+                                                            </td>
+                                                            {% endif %}
+                                                        </tr>
+
+
+
+                                                {% endfor %}  
+                                            </tbody>
+                                            </table> 
+                                                
+                                    
+                                </div>
+                            </div>
+                            {# table affectation #}
+                             <div class="col">
+                                 <div class="table-responsive m-t-40">
+                                              <table class="display nowrap table table-hover table-bordered" cellspacing="0" width="100%" style="font-size:13.5px;">
+                                                    <thead>
+                                                    <tr>
+                                                        <th style="font-weight: bold;">Magasinier</th>
+                                                        <th style="font-weight: bold;">Livreur</th>
+                                                        <th style="font-weight: bold;">Installateur</th>
+                                                        <th style="font-weight: bold;">Metteur en service</th>
+                                                        <th style="font-weight: bold;">Acceptateur</th>
+                                                        
+                                                        {% if app.user and (is_granted('ROLE_MODIFIER_AFFECTATION') or is_granted('ROLE_SUPPRIMER_AFFECTATION')) %}
+                                                        <th style="text-align:center;">Actions</th>
+                                                        {% endif %}
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody style="line-height:40px;">
+
+                                                {% for affectation in mission.affectations %}
+                                                    <tr data-id="{{ affectation.id }}" {% if affectation.id == selected_row %} style="Background-color:#dcdfdc;" {% endif %}>
+                                                            <td >  {% if affectation.magasinier is not null %}{{ affectation.magasinier.fullName  }}  {% endif %}</td>
+                                                            <td >  {% if affectation.livreur is not null %}{{ affectation.livreur.fullName  }}  {% endif %}</td>
+                                                            <td >  {% if affectation.installateur is not null %}{{ affectation.installateur.fullName  }}  {% endif %}</td>
+                                                            <td >  {% if affectation.metteurService is not null %}{{ affectation.metteurService.fullName  }}  {% endif %}</td>
+                                                            <td >  {% if affectation.acceptateur is not null %}{{ affectation.acceptateur.fullName  }}  {% endif %}</td>
+                                                            {% if app.user and (is_granted('ROLE_MODIFIER_AFFECTATION') or is_granted('ROLE_SUPPRIMER_AFFECTATION')) %}
+                                                            <td style="text-align: center; min-width:150px; width:120px;">
+                                                                {% if app.user and is_granted('ROLE_MODIFIER_AFFECTATION') %}
+                                                                 {% if test !=  true %}  
+                                                                <a class="btn btn-linkedin btn-sm"  href="{{ path('edit_affectation_page',{id:affectation.id,id_mission:mission.id,search_input:search_input,page:page}) }}" title="Modifier">
+                                                                    <i class="fa fa-pencil-square-o text-white"></i>
+                                                                </a>
+                                                                 {% endif %}
+                                                                {% endif %}
+                                                                {% if app.user and is_granted('ROLE_SUPPRIMER_AFFECTATION') %}
+                                                                <a class="btn btn-danger btn-sm" id="delete_affectation_data" data-id="{{affectation.id }}" data-toggle="modal" data-target="#modal_delete_data" title="Supprimer">
+                                                                    <i class="fa fa-trash-o text-white"></i>
+                                                                </a>
+                                                                {% endif %}
+                                                            </td>
+                                                            {% endif %}
+                                                        </tr>
+
+
+
+                                                {% endfor %}  
+                                            </tbody>
+                                            </table> 
+                                                
+                                    
+                                    </div>
+                                </div>
+                            </div>
+
+                          {% endfor %}  
+                        <div class="navigation pull-right" style="margin-left:20px;">
+                            {{ knp_pagination_render(missions) }}
+                        </div>
+                    {# </div><!-- end div table-responsive --> #}
+
+                        {% endif  %}
+                   </div><!-- end div card-body -->
+            </div><!-- end div card -->
+        </div><!-- end div col-12 -->
+    </section><!-- end div section -->
+
+    <!--  start modal suppression data -->
+
+    <div id="modal_delete_data" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false"
+         data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel" style="color:#4b50fc">Suppression enregistrement</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                 <div class="modal-body">
+                    <p style="color:black;">Voulez vous vraiment supprimer cet enregistrement ?</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger waves-effect" data-dismiss="modal" style="color:white;">Annuler</a>
+                    <a  class="btn btn-success waves-effect" style="color:white;" id="confirmer_delete">Confirmer</a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!--  end  modal suppression data -->
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script  src="http://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>  
+    
+
+    <script type="text/javascript">
+
+        {% for flash_message in app.session.flashBag.get('success') %}
+
+                toastr.success('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+        {% endfor %}
+
+        {% for flash_message in app.session.flashBag.get('info') %}
+
+                toastr.info('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+        {% endfor %}
+
+
+        {% for flash_message in app.session.flashBag.get('warning') %}
+
+                toastr.warning('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+        {% endfor %}
+
+        {% for flash_message in app.session.flashBag.get('error') %}
+
+                toastr.error('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+        {% endfor %}
+
+
+    </script>
+    
+    {% include('Equipement/mission/ajax/delete.html.twig') %}
+    {% include('Equipement/mission/ajax/deleteAffectation.html.twig') %}
+    {% include('Equipement/mission/ajax/deleteMateriel.html.twig') %}
+    {% include('Equipement/mission/ajax/change_list.html.twig') %}
+
+{% endblock %}
+

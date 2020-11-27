@@ -1,0 +1,111 @@
+{% extends ('base.html.twig') %}
+
+{% block title %} IT&M - Rôles d'accès {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    
+    <link rel="stylesheet" href="{{ asset('template/app-assets/js/scripts/jstree/themes/default/style.min.css') }}"/>
+
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+
+
+    <div class="row" >
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Changer rôles d'accès : <strong style="font-size:16px;">{{ user.firstName ~' '~ user.lastName }}</strong></h4>
+                    <div class="heading-elements mt-0"> 
+                        <a class="btn btn-warning btn-sm"  
+                            href="{{ path('user_page',{selected_row:selected_row,search_input:search_input,page:page}) }}" title="retour en arrière">
+                            <i class="fa fa-arrow-circle-left"></i>
+                        </a>
+                    </div>
+                </div>  
+                <div class="card-body">
+                    <form name="form-user" class="form-disable" method="POST" action="{{ path('user_edit_roles_page',{id:user.id,selected_row:selected_row,search_input:search_input,page:page}) }}">
+                        <div class="row justify-content-md-center">
+
+                            <div class="col-md-6 col-md-auto" style="border-right: 1px solid #323232;">
+
+                                <h5 class="mb-3"><strong>Rôles administratifs</strong></h5>
+
+                                <div id="jstree-admin" class="jstree-admin"></div>
+                                <input type="hidden" name="jstree-input-admin" value="{{ user.roles|json_encode() }}"/>
+
+                            </div>
+
+                            <div class="col-md-6 col-md-auto" style="border-left: 1px solid #323232;">
+
+                                <h5 class="mb-3"><strong>Rôles fonctionnels</strong></h5>
+
+                                <div id="jstree-user" class="jstree-user"></div>
+                                <input type="hidden" name="jstree-input-user" value="{{ user.roles|json_encode() }}"/>
+
+                            </div>
+
+
+                            <div class="col-md-12 mt-4">
+
+                                <button type="submit" class="btn btn-success waves-effect pull-right btn-save">Sauvegarder</button>
+
+                                 <a class="btn btn-danger waves-effect pull-left" href="{{ path('user_page',{selected_row:selected_row,search_input:search_input,page:page}) }}" style="color:white;">Annuler</a>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+    {% block javascripts %}
+        {{ parent() }}
+
+        <script type="text/javascript" src="{{ asset('template/app-assets/js/scripts/jstree/jstree.min.js') }}"></script>
+        <script>
+
+            $(function () {
+                $('#jstree-admin').on("changed.jstree", function (e, data) {
+                    // console.log(data.selected);
+
+                    $('input[name="jstree-input-admin"]').val(data.selected);
+                }).jstree({
+                    "data": {{ admin_roles|json_encode()|raw }},
+                    "plugins": ["wholerow", "checkbox"]
+                });
+
+                // ---------------
+                $('#jstree-admin').jstree(true).settings.core.data = {{ admin_roles|json_encode()|raw }};
+                $('#jstree-admin').jstree(true).refresh(true);
+                $('#jstree-admin').jstree(true).load_node('#');
+                // ---------------
+
+                $('#jstree-user').on("changed.jstree", function (e, data) {
+                    // console.log(data.selected);
+
+                    $('input[name="jstree-input-user"]').val(data.selected);
+                }).jstree({
+                    "data": {{ user_roles|json_encode()|raw }},
+                    "plugins": ["wholerow", "checkbox"]
+                });
+
+                // ---------------
+                $('#jstree-user').jstree(true).settings.core.data = {{ user_roles|json_encode()|raw }};
+                $('#jstree-user').jstree(true).refresh(true);
+                $('#jstree-user').jstree(true).load_node('#');
+                // ---------------
+
+            });
+
+        </script>
+
+
+    {% endblock %}
+

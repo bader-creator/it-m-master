@@ -1,0 +1,116 @@
+
+
+.body_loading{
+	position:absolute;
+	z-index: 1;
+	left:45.8%;
+	top:40%;
+	opacity: 1;
+}
+body{
+	background-color: coral
+}
+
+
+marquee {
+	width: 100%;
+	padding: 10px 0;
+	background-color: #b0bec5;
+	margin-bottom:10px;
+}
+
+
+.popover-header {
+    background-color: #ebeee5;
+    border-bottom: 1px solid #2112f0;
+}
+
+
+tbody{
+    line-height: 40px;
+    font-size: 13px !important;
+}
+
+.size-icon{
+	font-size:20px;
+}
+
+.modal-body tbody,
+.dtp-content tbody {
+	line-height: 20px;
+}
+.dtp-content .page-link:hover {
+	background: transparent;
+	border: none !important;
+	color: white;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+	padding: 0 0.4em;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+	background: #00b5b8;
+}
+.dataTables_paginate ul li {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+.hide, .hidden {
+	display: none;
+}
+
+td.action, td.actions {
+	white-space: nowrap;
+}
+
+tbody{
+	font-size:12px !important;
+}
+tbody span{
+	font-size:12px !important;
+}
+thead{
+	font-size:13px !important;
+}
+
+.nav-item a {
+	font-size:13px !important;
+}
+span{
+	font-size:13px !important;
+}
+
+.process_arptc{
+	font-size:13px !important;
+}
+
+.note-editor.note-frame {
+    border: 2px solid black !important;
+}
+
+.ellipsis{
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+  }
+
+  .card-bottom{
+    height: -webkit-calc(100% - 45px);
+}
+
+
+.color_menu_link{
+	box-shadow:0px 0px 10px #0f7bd3;
+	-webkit-animation-name: clignote_menu; /*on affecte l'animation clignote à notre bouton*/
+	-webkit-animation-duration: 1s; /*on définit la durée de l'animation à 1s */
+	-webkit-animation-iteration-count:infinite; /*on dit que l'animation se répétera à l'infini.*/
+}
+
+@-webkit-keyframes clignote_menu {
+	0%{box-shadow:0px 0px 10px #0f7bd3;}
+	50%{box-shadow:0px 0px 0px #0f7bd3;}
+	100%{box-shadow:0px 0px 10px #0f7bd3;}
+	}
+

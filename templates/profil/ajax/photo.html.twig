@@ -1,0 +1,87 @@
+<script type="text/javascript"> 
+    
+    /*-----------------------------------------------------------------------*/
+    /*                  debut function Modifier photo de profil              */
+    /*-----------------------------------------------------------------------*/
+
+    $(document).on('click','#update_photo',function(){
+
+            $("#importer_fichier").on('click',function(){
+
+            var form_upload = $("#form_edit_photo")[0];
+
+            console.log(form_upload);
+
+            var filename = $("#input-file-now").val();
+
+            var parts = filename.split(".");
+
+            fileExt = parts[(parts.length-1)];
+
+            if(fileExt=="")
+            {
+                 toastr.warning("Veuillez choisir un photo !", {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+            }
+            else if(fileExt!="")
+            {
+                if ( fileExt !="png" && fileExt !="jpg" && fileExt!="jpeg" && fileExt !="PNG" && fileExt !="JPG" && fileExt!="JPEG" )
+                {
+                    toastr.warning("Les extensions autorisées sont: png , jpg et jpeg", {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+                }
+
+                var oFile = document.getElementById("input-file-now").files[0];
+
+                var size =  oFile.size*.0009765625;
+
+                if(size > 2048)
+                {
+                    toastr.info("La taille maximal autorisée est 2048 KiB", {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+                }
+                else {
+                    /*----------------- debut upload file -------------------*/
+
+                    var url="{{ path('profil_change_photo') }}";
+
+                    $.ajax({
+                        url: url,
+                        data: new FormData(form_upload),
+                        type:"post",
+                        contentType:false,
+                        processData:false,
+                        cache:false,
+                        dataType:"json", // Change this according to your response from the server.
+                        beforeSend:function(){
+                            $("#modal_photo_profil").modal("hide");
+                            $(".body_loading").removeClass("d-none");
+                            $("body").css("opacity",0.4);
+                        },
+                        statusCode: {
+                            200: function (reponse) {
+
+                                var url = "{{ path('profil_page') }}";
+
+                                window.location.href = url;
+
+                            },// fin 200
+                            201:function(reponse)
+                            {
+                               $("#modal_photo_profil").modal("show");
+                               toastr.error("Format du fichier non valide !", {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+                            }
+                        },// fin status code
+                        complete:function(){
+                            $(".body_loading").addClass("d-none");
+                            $("body").css("opacity",1);
+                        }
+                    });// fin appel ajax
+
+                    /*--------------------- fin upload file -------------------*/
+                }  
+            }
+        }); // end button uplod file
+    }); // end click button modal
+
+    /*-----------------------------------------------------------------------*/
+    /*                  fin function Modifier photo de profil                */
+    /*-----------------------------------------------------------------------*/
+</script>

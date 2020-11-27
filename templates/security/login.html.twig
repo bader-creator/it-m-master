@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+<!-- BEGIN: Head-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="SFM">
+     <title class="title_app">{% block title %} IT&M - Login {% endblock %}</title>
+     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('template/images/sfm.png') }}" >
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i%7COpen+Sans:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- BEGIN: Vendor CSS-->
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/app-assets/vendors/css/vendors.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/app-assets/vendors/css/forms/icheck/icheck.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/app-assets/vendors/css/forms/icheck/custom.css') }}">
+    <!-- END: Vendor CSS-->
+
+    <!-- BEGIN: Theme CSS-->
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/app-assets/css/bootstrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/app-assets/css/bootstrap-extended.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/app-assets/css/colors.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/app-assets/css/components.css') }}">
+    <!-- END: Theme CSS-->
+
+    <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/app-assets/css/core/menu/menu-types/vertical-menu.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/app-assets/css/core/colors/palette-gradient.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/app-assets/css/pages/login-register.css') }}">
+    <!-- END: Page CSS-->
+
+
+</head>
+<!-- END: Head-->
+
+<!-- BEGIN: Body-->
+
+<body class="vertical-layout vertical-menu 1-column   blank-page blank-page" data-open="click" data-menu="vertical-menu" data-col="1-column">
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-wrapper">
+            <div class="content-header row"></div>
+            <div class="content-body">
+                <section class="flexbox-container">
+                    <div class="col-12 d-flex align-items-center justify-content-center">
+                        <div class="col-lg-4 col-md-8 col-10 box-shadow-2 p-0">
+                            <div class="card border-grey border-lighten-3 m-0">
+
+                                <div class="card-header border-0">
+                                    <!-- message erreur reset pwd -->
+                                     {% if username is defined and username is not empty %}
+                                        <div class="alert alert-danger mb-20" style="margin-bottom: 40px;">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="margin-top:5px;" ><span aria-hidden="true">&times;</span></button>
+                                            <p class="p-0 m-0">Aucun compte ne correspond à <strong>{{ username }}</strong></p>
+                                        </div>
+                                    {% endif %}
+                                    {% for flash_message in app.session.flashBag.get('warning') %}
+                                        <div class="alert alert-warning  alert-rounded">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="margin-top:5px;" ><span aria-hidden="true">&times;</span></button>
+                                            <i class="fa fa-info-circle"></i> {{ flash_message }}
+                                        </div>
+                                    {% endfor %}
+                                    <!-- message erreur reset pwd -->
+                                    <!-- message erreur expired session -->
+                                    {% for flash_message in app.session.flashBag.get('info') %}
+                                        <div class="alert alert-info  alert-rounded">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="margin-top:5px;" ><span aria-hidden="true">&times;</span></button>
+                                            <i class="fa fa-info-circle"></i> {{ flash_message }}
+                                        </div>
+                                    {% endfor %}
+                                    <!-- message erreur login -->
+                                    {% if error is defined and error %}
+                                        <div class="alert alert-danger alert-dismissible" role="alert" style="opacity:0.8">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="margin-top:5px;" ><span aria-hidden="true">&times;</span></button>
+                                            <strong style="font-weight: bold; padding-right:10px;"> Erreur ! </strong> {{ error.messageKey|trans(error.messageData, 'security') }}
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="card-title text-center">
+                                        <div>
+                                            <img src="{{ asset('template/images/logo_complet_int.png') }}" height="70" width="140" >
+                                        </div>
+                                    </div>
+                                    {% block subtitle %}
+                                        <h6 class="card-subtitle line-on-side text-muted text-center font-small-3 pt-1"><span><strong>Connectez vous</strong> à votre compte</span></h6>
+                                    {% endblock %}
+                                </div>
+                                {% block content %}
+                                    <div class="card-content">
+                                            <div class="card-body">
+                                                <form role="form" action="{{ path('fos_user_security_check') }}" method="post" class="login-form form-horizontal">
+                                                    <input type="hidden" name="_csrf_token" value="{{csrf_token('authenticate')}}" >
+                                                    <fieldset class="form-group position-relative has-icon-left mb-0">
+                                                        <input type="text" name="_username" value="{{ last_username }}" class="form-control form-control-lg" id="user-name" placeholder="Nom utilisateur ou Adresse e-mail" autofocus>
+                                                        <div class="form-control-position">
+                                                            <i class="ft-user"></i>
+                                                        </div>
+                                                    </fieldset>
+                                                    <br>
+                                                    <fieldset class="form-group position-relative has-icon-left">
+                                                        <input type="password" name="_password" class="form-control form-control-lg" id="user-password" placeholder="Entrer un mot de passe">
+                                                        <div class="form-control-position">
+                                                            <i class="fa fa-key"></i>
+                                                        </div>
+                                                    </fieldset>
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-6 col-12 text-center text-sm-left">
+                                                            <fieldset>
+                                                                <input type="checkbox" id="remember-me" name="_remember_me" class="chk-remember" value="on">
+                                                                <label for="remember-me"> Se souvenir de moi</label>
+                                                            </fieldset>
+                                                        </div>
+                                                        <div class="col-sm-6 col-12 text-center text-sm-right"><a href="{{ path('back_resetting_request') }}" class="card-link">Mot de passe oublié ?</a></div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-outline-primary btn-lg btn-block"><i class="ft-unlock"></i> Login</button>
+                                                </form>
+                                            </div>
+                                    </div>
+                                {% endblock %}
+                                <div class="card-footer">
+                                    <div class="">
+                                        <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2"><span class=" d-block d-md-inline-block">Copyright &copy; {{ 'now' | date('Y') }} <a class="text-bold-800 grey darken-2" href="https://www.sfmtechnologies.com" target="_blank">SFM Technologies </a></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+
+    <!-- BEGIN: Vendor JS-->
+    <script src="{{ asset('template/app-assets/vendors/js/vendors.min.js') }}"></script>
+    <!-- BEGIN Vendor JS-->
+
+    <!-- BEGIN: Page Vendor JS-->
+    <script src="{{ asset('template/app-assets/vendors/js/forms/icheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('template/app-assets/vendors/js/forms/validation/jqBootstrapValidation.js') }}"></script>
+    <!-- END: Page Vendor JS-->
+
+    <!-- BEGIN: Theme JS-->
+    <script src="{{ asset('template/app-assets/js/core/app-menu.js') }}"></script>
+    <script src="{{ asset('template/app-assets/js/core/app.js') }}"></script>
+    <!-- END: Theme JS-->
+
+    <!-- BEGIN: Page JS-->
+    <script src="{{ asset('template/app-assets/js/scripts/forms/form-login-register.js') }}"></script>
+    <!-- END: Page JS-->
+
+</body>
+<!-- END: Body-->
+
+</html>

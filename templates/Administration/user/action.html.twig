@@ -1,0 +1,251 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} IT&M - Nouvel Utilisateur {% endblock %}
+
+
+{% block body %}
+    {{ parent() }}      
+        
+        <section class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>{% if action =="add" %} Nouvel {% else %} Modifier {% endif %} Utilisateur</h5>
+                        <div class="heading-elements mt-0"> 
+                            <a class="btn btn-warning btn-sm"  {% if action == "add" %} href="{{ path('user_page') }}" {% elseif action == "edit" %}
+                                href="{{ path('user_page',{selected_row:selected_row,search_input:search_input,page:page}) }}" {% endif %} title="retour en arrière">
+                                <i class="fa fa-arrow-circle-left"></i>
+                            </a>
+                        </div>
+                    </div>           
+                    <div class="card-body">
+                        {{ form_start(form, {'attr' :{'class' : 'form-disable', 'novalidate': 'novalidate', 'role': 'form'}}) }} 
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+
+                                        <div class="form-group m-b-40">
+
+                                            <label>Nom utilisateur</label> : <span class=" text-danger">*</span>
+
+                                            <input type="text" class="form-control"   name="{{ form.username.vars.full_name}}" value="{{ form.username.vars.value }}" autofocus>
+
+                                            {% if not form.username.vars.valid %}
+
+                                                {% for error in form.username.vars.errors  %}
+
+                                                    <span style="color:#f31313;"> {{ error.message }}</span>
+
+                                                {% endfor %}
+
+                                            {% endif %}
+
+                                            {% do form.username.setRendered %}
+
+                                        </div>
+                                
+                                    </div> <!-- end div username -->
+
+                                    <div class="col-md-4">
+
+                                        <div class="form-group m-b-40">
+
+                                            <label>Prénom</label> : <span class=" text-danger">*</span>
+
+                                            <input type="text" class="form-control"   name="{{ form.firstName.vars.full_name}}" value="{{ form.firstName.vars.value }}">
+
+                                            {% if not form.firstName.vars.valid %}
+
+                                                {% for error in form.firstName.vars.errors  %}
+
+                                                    <span style="color:#f31313;"> {{ error.message }}</span>
+
+                                                {% endfor %}
+
+                                            {% endif %}
+
+                                            {% do form.firstName.setRendered %}
+
+                                        </div>
+                                
+                                    </div> <!-- end div prenom -->
+
+                                    <div class="col-md-4">
+
+                                        <div class="form-group m-b-40">
+
+                                            <label>Nom</label> : <span class=" text-danger">*</span>
+
+                                            <input type="text" class="form-control"   name="{{ form.lastName.vars.full_name}}" value="{{ form.lastName.vars.value }}">
+
+                                            {% if not form.lastName.vars.valid %}
+
+                                                {% for error in form.lastName.vars.errors  %}
+
+                                                    <span style="color:#f31313;"> {{ error.message }}</span>
+
+                                                {% endfor %}
+
+                                            {% endif %}
+
+                                            {% do form.lastName.setRendered %}
+
+                                        </div>
+                                
+                                    </div> <!-- end div nom -->
+
+                                    <div class="col-md-4">
+
+                                        <div class="form-group m-b-40">
+
+                                            <label>Email</label> : <span class=" text-danger">*</span>
+
+                                            <input type="text" class="form-control"   name="{{ form.email.vars.full_name}}" value="{{ form.email.vars.value }}">
+
+                                            {% if not form.email.vars.valid %}
+
+                                                {% for error in form.email.vars.errors  %}
+
+                                                    <span style="color:#f31313;"> {{ error.message }}</span>
+
+                                                {% endfor %}
+
+                                            {% endif %}
+
+                                            {% do form.email.setRendered %}
+
+                                        </div>
+                                
+                                    </div> <!-- end div email -->
+
+                                    <div class="col-md-4">
+
+                                        <div class="form-group m-b-40">
+
+                                            <label>N° Téléphone</label> : <span class=" text-danger">*</span>
+
+                                            <input type="text" class="form-control"   name="{{ form.phone.vars.full_name}}" value="{{ form.phone.vars.value }}">
+
+                                            {% if not form.phone.vars.valid %}
+
+                                                {% for error in form.phone.vars.errors  %}
+
+                                                    <span style="color:#f31313;"> {{ error.message }}</span>
+
+                                                {% endfor %}
+
+                                            {% endif %}
+
+                                            {% do form.phone.setRendered %}
+
+                                        </div>
+                                
+                                    </div> <!-- end div phone -->
+
+                                    <div class="col-md-4">
+
+                                        <div class="form-group m-b-40">
+
+                                            <label>Sexe</label> : <span class=" text-danger">*</span>
+
+                                            {{ form_widget(form.sexe, {'attr' : {'class':'select2 form-control'}})}}
+
+                                            {% if not form.sexe.vars.valid %}
+
+                                                {% for error in form.phone.vars.errors  %}
+
+                                                    <span style="color:#f31313;"> {{ error.message }}</span>
+
+                                                {% endfor %}
+
+                                            {% endif %}
+
+                                            {% do form.sexe.setRendered %}
+
+                                        </div>
+                                
+                                    </div> <!-- end div sexe -->
+
+                                    <div class="col-md-5">
+
+                                        <div class="form-group m-b-40">
+
+                                            <label>Groupe</label> : <span class=" text-danger">*</span>
+
+                                            {{ form_widget(form.groupe, {'attr' : {'class':'select2 form-control'}})}}
+
+                                            {% if not form.groupe.vars.valid %}
+
+                                                {% for error in form.groupe.vars.errors  %}
+
+                                                    <span style="color:#f31313;"> {{ error.message }}</span>
+
+                                                {% endfor %}
+
+                                            {% endif %}
+
+                                            {% do form.groupe.setRendered %}
+
+                                        </div>
+                                
+                                    </div> <!-- end div groupe -->
+
+                                    <div class="col-md-5">
+
+                                        <div class="form-group m-b-40">
+
+                                            <label>Fonction</label> : <span class=" text-danger">*</span>
+
+                                            {{ form_widget(form.fonction, {'attr' : {'class':'select2 form-control'}})}}
+
+                                            {% if not form.fonction.vars.valid %}
+
+                                                {% for error in form.fonction.vars.errors  %}
+
+                                                    <span style="color:#f31313;"> {{ error.message }}</span>
+
+                                                {% endfor %}
+
+                                            {% endif %}
+
+                                            {% do form.fonction.setRendered %}
+
+                                        </div>
+                                
+                                    </div> <!-- end div fonction -->
+
+                                    <div class="col-md-2">
+
+                                        <div class="form-group m-b-40">
+
+                                            <label>Statut</label> : <span class=" text-danger">*</span>
+
+                                            {{ form_widget(form.enabled, {'attr' : {'class':'select2 form-control'}})}}
+
+                                            {% do form.enabled.setRendered %}
+
+                                        </div>
+                                
+                                    </div> <!-- end div enabled -->
+
+                                    <div class="col-md-12">
+
+                                        <a  class="btn btn-danger waves-effect pull-left text-white"
+                                            {% if action == "add" %} href="{{ path('user_page') }}" {% elseif action == "edit" %}
+                                            href="{{ path('user_page',{selected_row:selected_row,search_input:search_input,page:page}) }}" {% endif %}>Annuler
+                                        </a>
+
+                                        {{ form_widget(form.save, {'attr' :{'class':'btn btn-success pull-right'}})}}
+
+                                    </div><!-- end div action -->
+
+                                </div><!-- end div row -->
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% endblock %}

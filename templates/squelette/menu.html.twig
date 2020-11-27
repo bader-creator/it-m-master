@@ -1,0 +1,184 @@
+<!-- BEGIN: Main Menu-->
+    <!-- main menu-->
+    <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow menu-border">
+        <!-- main menu header-->
+        <!-- include includes/menu-header-->
+        <!-- / main menu header-->
+        <!-- main menu content-->
+        <div class="main-menu-content">
+            <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
+            
+                 <li class="navigation-header" >
+                    <span >Menu de navigation</span><i class=" ft-minus" data-toggle="tooltip" data-placement="right" data-original-title="Menu de navigation"></i>
+                </li>
+
+                <div class="dropdown-divider"></div>
+                
+                <li class="nav-item {% if current_menu is defined and current_menu == 'accueil' %} active {% endif %}">
+                    <a href="{{ path('home_page') }}" ><i class="fa fa-home"></i><span class="menu-title">Accueil</span></a>
+                </li>
+
+
+               
+                        {% if app.user and is_granted('ROLE_AFFICHER_NOEUDACCEPTANCE') %}
+                            <li class="{% if current_menu is defined and current_menu == 'noeudAcceptance' %}active {% endif %}">
+                                <a class="menu-item" href="{{ path('noeudAcceptance_page') }}"><i class="fa fa-bullseye"></i> Noeuds Acceptance </a>
+                            </li>
+                        {% endif %} 
+                  
+               
+            
+
+
+
+                {% if app.user and (is_granted('ROLE_AFFICHER_TYPE_NOMENCLATURE') or  is_granted('ROLE_AFFICHER_VALEUR_NOMENCLATURE')) %}
+                    <li class="nav-item {% if current_menu is defined and (current_menu == 'type_nomenclature' or current_menu == 'valeur_nomenclature' ) %} active {% endif %}">
+                        <a><i class="fa fa-language"></i><span class="menu-title"> Nomenclatures</span></a>
+                        <ul class="menu-content">
+                            {% if app.user and is_granted('ROLE_AFFICHER_TYPE_NOMENCLATURE') %}
+                                <li class="{% if current_menu is defined and current_menu == 'type_nomenclature' %} active {% endif %}">
+                                    <a class="menu-item" href="{{ path('type_nomenclature_page') }}"><i class="fa fa-asterisk"></i> Types </a>
+                                </li>
+                            {% endif %}
+                            {% if app.user and is_granted('ROLE_AFFICHER_VALEUR_NOMENCLATURE') %}
+                                <li class="{% if current_menu is defined and current_menu =='valeur_nomenclature' %} active {% endif %}">
+                                    <a class="menu-item" href="{{ path('valeur_nomenclature_page') }}"><i class="fa fa-asterisk"></i> Valeurs </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+
+                {% if app.user and (is_granted('ROLE_AFFICHER_GROUPE') or  is_granted('ROLE_AFFICHER_UTILISATEUR')   or is_granted('ROLE_AFFICHER_FONCTION') ) %}
+                <li class="nav-item {% if current_menu is defined and (current_menu == 'groupe' or current_menu == 'fonction' or current_menu == 'utilisateur' or  current_menu == 'region') %} active {% endif %}"><a>
+                    <i class="fa fa-cogs"></i><span class="menu-title"> Administration</span></a>
+                    <ul class="menu-content">
+                        {% if app.user and is_granted('ROLE_AFFICHER_UTILISATEUR') %}
+                            <li class="{% if current_menu is defined and current_menu == 'utilisateur' %}active {% endif %}">
+                                <a class="menu-item" href="{{ path('user_page') }}"><i class="fa fa-user"></i> Utilisateurs </a>
+                            </li>
+                        {% endif %}
+                        {% if app.user and is_granted('ROLE_AFFICHER_GROUPE') %}
+                            <li class="{% if current_menu is defined and current_menu == 'groupe' %} active {% endif %}">
+                                <a class="menu-item" href="{{ path('groupe_page') }}"><i class="fa fa-users"></i> Groupes </a>
+                            </li>
+                        {% endif %}
+                        {% if app.user and is_granted('ROLE_AFFICHER_FONCTION') %}
+                            <li class="{% if current_menu is defined and current_menu == 'fonction' %} active {% endif %}">
+                                <a class="menu-item" href="{{ path('fonction_page') }}"><i class="fa fa-graduation-cap"></i> Fonctions </a>
+                            </li>
+                        {% endif %}
+
+                          {% if app.user and is_granted('ROLE_AFFICHER_REGION') %}
+                            <li class="{% if current_menu is defined and current_menu == 'region' %} active {% endif %}">
+                                <a class="menu-item" href="{{ path('region_page') }}"><i class="fa fa-map-marker"></i>  Régions </a>
+                            </li>
+                        {% endif %}
+                        
+                    </ul>
+                </li>
+                {% endif %}
+
+
+                 {% if app.user and (is_granted('ROLE_AFFICHER_FICHE') or  is_granted('ROLE_AFFICHER_CHOIX') or  is_granted('ROLE_AFFICHER_QUESTION') or  is_granted('ROLE_AFFICHER_SOUITEM') or  is_granted('ROLE_AFFICHER_ITEM') ) %}
+                <li class="nav-item {% if current_menu is defined and (current_menu == 'fiche'  or current_menu == 'sousItem'  or current_menu == 'item'  or current_menu == 'question'  or current_menu == 'choix' ) %} active {% endif %}"><a>
+                    <i class="fa fa-file"></i><span class="menu-title"> Fiche d'acceptance</span></a>
+                    <ul class="menu-content">
+                        {% if app.user and is_granted('ROLE_AFFICHER_FICHE') %}
+                            <li class="{% if current_menu is defined and current_menu == 'fiche' %}active {% endif %}">
+                                <a class="menu-item" href="{{ path('fiche_page') }}"><i class="fa fa-bullseye"></i> Gestion des fiches </a>
+                            </li>
+                        {% endif %}
+
+  
+                         {% if app.user and is_granted('ROLE_AFFICHER_ITEM') %}
+                            <li class="{% if current_menu is defined and current_menu == 'item' %}active {% endif %}">
+                                <a class="menu-item" href="{{ path('item_page') }}"><i class="fa fa-bullseye"></i> Gestion des items </a>
+                            </li>
+                        {% endif %}
+                       
+                          
+                         {% if app.user and is_granted('ROLE_AFFICHER_SOUSITEM') %}
+                            <li class="{% if current_menu is defined and current_menu == 'sousItem' %}active {% endif %}">
+                                <a class="menu-item" href="{{ path('sousItem_page') }}"><i class="fa fa-bullseye"></i> Gestion des sous-items </a>
+                            </li>
+                        {% endif %}
+                         {% if app.user and is_granted('ROLE_AFFICHER_QUESTION') %}
+                            <li class="{% if current_menu is defined and current_menu == 'question' %}active {% endif %}">
+                                <a class="menu-item" href="{{ path('question_page') }}"><i class="fa fa-bullseye"></i> Gestion des questions </a>
+                            </li>
+                        {% endif %}
+                          {% if app.user and is_granted('ROLE_AFFICHER_CHOIX') %}
+                            <li class="{% if current_menu is defined and current_menu == 'choix' %}active {% endif %}">
+                                <a class="menu-item" href="{{ path('choix_page') }}"><i class="fa fa-bullseye"></i> Gestion des choix </a>
+                            </li>
+                        {% endif %}
+                       
+                    </ul>
+                </li>
+                {% endif %}
+
+
+                  {% if app.user and (is_granted('ROLE_AFFICHER_SITE') or is_granted('ROLE_AFFICHER_ARMOIRE') )%}
+                <li class="nav-item {% if current_menu is defined and (current_menu == 'site' or current_menu == 'armoire'   ) %} active {% endif %}"><a>
+                    <i class="fa fa-snowflake-o"></i><span class="menu-title"> Noeuds</span></a>
+                    <ul class="menu-content">
+                        {% if app.user and is_granted('ROLE_AFFICHER_SITE') %}
+                            <li class="{% if current_menu is defined and current_menu == 'site' %}active {% endif %}">
+                                <a class="menu-item" href="{{ path('site_page') }}"><i class="fa fa-bullseye"></i> Gestion des sites </a>
+                            </li>
+                        {% endif %}
+
+                          {% if app.user and is_granted('ROLE_AFFICHER_ARMOIRE') %}
+                            <li class="{% if current_menu is defined and current_menu == 'armoire' %}active {% endif %}">
+                                <a class="menu-item" href="{{ path('armoire_page') }}"><i class="fa fa-bullseye"></i> Gestion des armoires </a>
+                            </li>
+                        {% endif %}
+
+
+                       
+                    </ul>
+                </li>
+                {% endif %}
+
+                  {% if app.user and (is_granted('ROLE_AFFICHER_STOCK')  ) %}
+                <li class="nav-item {% if current_menu is defined and (current_menu == 'stock') %} active {% endif %}"><a>
+                    <i class="fa fa-tags"></i><span class="menu-title"> Gestion des équipements</span></a>
+                    <ul class="menu-content">
+                        {% if app.user and is_granted('ROLE_AFFICHER_STOCK') %}
+                            <li class="{% if current_menu is defined and current_menu == 'stock' %} active {% endif %}">
+                                <a class="menu-item" href="{{ path('stock_page') }}"><i class="fa fa-user"></i> Stock </a>
+                            </li>
+                        {% endif %}
+
+                          {# {% if app.user and is_granted('ROLE_AFFICHER_TRACABILITY') or is_granted('ROLE_AFFICHER_TRACABILITY') %}
+                            <li class="{% if current_menu is defined and current_menu == 'tracability' %} active {% endif %}">
+                                <a class="menu-item" href="{{ path('tracability_page') }}"><i class="fa fa-user"></i> Tracabilité </a>
+                            </li>
+                        {% endif %} #}
+
+                        
+                          {% if app.user and is_granted('ROLE_AFFICHER_MISSION') or is_granted('ROLE_AFFICHER_MISSION') %}
+                            <li class="{% if current_menu is defined and current_menu == 'mission' %} active {% endif %}">
+                                <a class="menu-item" href="{{ path('mission_page') }}"><i class="fa fa-user"></i> Mission </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+                {% endif %}
+                       
+
+                <li class="nav-item {% if current_menu is defined and current_menu=='profil' %} active {% endif %}"><a href="{{ path('profil_page') }}"><i class="fa fa-id-card"></i><span class="menu-title"> Profil</span></a></li>
+
+                <li class=" nav-item"><a href="{{ path('app_logout') }}"><i class="fa fa-sign-out"></i><span class="menu-title"> Déconnexion</span></a></li>
+                
+                        
+            </ul>
+        </div>
+        <!-- /main menu content-->
+        <!-- main menu footer-->
+        <!-- include includes/menu-footer-->
+        <!-- main menu footer-->
+    </div>
+    <!-- / main menu-->
+<!-- END: Main Menu-->

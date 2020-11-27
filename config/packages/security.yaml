@@ -1,0 +1,275 @@
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: bcrypt
+
+        
+    role_hierarchy:
+        ###
+        ROLE_AFFICHER_TYPE_NOMENCLATURE: ROLE_USER
+        ROLE_AJOUTER_TYPE_NOMENCLATURE: ROLE_USER
+        ROLE_MODIFIER_TYPE_NOMENCLATURE: ROLE_USER
+        ROLE_SUPPRIMER_TYPE_NOMENCLATURE: ROLE_USER
+        ####
+        ROLE_AFFICHER_VALEUR_NOMENCLATURE: ROLE_USER
+        ROLE_AJOUTER_VALEUR_NOMENCLATURE: ROLE_USER
+        ROLE_MODIFIER_VALEUR_NOMENCLATURE: ROLE_USER
+        ROLE_SUPPRIMER_VALEUR_NOMENCLATURE: ROLE_USER
+        ###
+        ROLE_AFFICHER_GROUPE: ROLE_USER
+        ROLE_AJOUTER_GROUPE: ROLE_USER
+        ROLE_MODIFIER_GROUPE: ROLE_USER
+        ROLE_SUPPRIMER_GROUPE: ROLE_USER
+        ###
+        ROLE_AFFICHER_FONCTION: ROLE_USER
+        ROLE_AJOUTER_FONCTION: ROLE_USER
+        ROLE_MODIFIER_FONCTION: ROLE_USER
+        ROLE_SUPPRIMER_FONCTION: ROLE_USER
+        ###
+        ROLE_AFFICHER_REGION: ROLE_USER
+        ROLE_AJOUTER_REGION: ROLE_USER
+        ROLE_MODIFIER_REGION: ROLE_USER
+        ROLE_SUPPRIMER_REGION: ROLE_USER
+        ###
+        ROLE_AFFICHER_UTILISATEUR: ROLE_USER
+        ROLE_AJOUTER_UTILISATEUR: ROLE_USER
+        ROLE_MODIFIER_UTILISATEUR: ROLE_USER
+        ROLE_SUPPRIMER_UTILISATEUR: ROLE_USER
+        ROLE_RESET_PWD_UTILISATEUR: ROLE_USER
+        ROLE_FAST_CONNEXION_UTILISATEUR: ROLE_USER
+        ROLE_CHANGE_ROLE_UTILISATEUR: ROLE_USER
+        ###
+        ROLE_AFFICHER_FICHE: ROLE_USER
+        ROLE_AJOUTER_FICHE: ROLE_USER
+        ROLE_MODIFIER_FICHE: ROLE_USER
+        ROLE_SUPPRIMER_FICHE: ROLE_USER
+        ###
+        ROLE_AFFICHER_CHOIX: ROLE_USER
+        ROLE_AJOUTER_CHOIX: ROLE_USER
+        ROLE_MODIFIER_CHOIX: ROLE_USER
+        ROLE_SUPPRIMER_CHOIX: ROLE_USER
+        ###
+        ROLE_AFFICHER_QUESTION: ROLE_USER
+        ROLE_AJOUTER_QUESTION: ROLE_USER
+        ROLE_MODIFIER_QUESTION: ROLE_USER
+        ROLE_SUPPRIMER_QUESTION: ROLE_USER
+        ###
+        ROLE_AFFICHER_SOUSITEM: ROLE_USER
+        ROLE_AJOUTER_SOUSITEM: ROLE_USER
+        ROLE_MODIFIER_SOUSITEM: ROLE_USER
+        ROLE_SUPPRIMER_SOUSITEM: ROLE_USER
+        ###
+        ROLE_AFFICHER_SITE: ROLE_USER
+        ROLE_AJOUTER_SITE: ROLE_USER
+        ROLE_MODIFIER_SITE: ROLE_USER
+        ROLE_SUPPRIMER_SITE: ROLE_USER
+        ###
+        ROLE_AFFICHER_ARMOIRE: ROLE_USER
+        ROLE_AJOUTER_ARMOIRE: ROLE_USER
+        ROLE_MODIFIER_ARMOIRE: ROLE_USER
+        ROLE_SUPPRIMER_ARMOIRE: ROLE_USER
+        ###
+        ROLE_AFFICHER_NOEUDACCEPTANCE: ROLE_USER
+        ROLE_AJOUTER_NOEUDACCEPTANCE: ROLE_USER
+        ROLE_MODIFIER_NOEUDACCEPTANCE: ROLE_USER
+        ROLE_SUPPRIMER_NOEUDACCEPTANCE: ROLE_USER
+        ROLE_SHOW_NOEUDACCEPTANCE: ROLE_USER
+        ###
+        ROLE_AFFICHER_STOCK: ROLE_USER
+        ROLE_AJOUTER_STOCK: ROLE_USER
+        ROLE_MODIFIER_STOCK: ROLE_USER
+        ROLE_SUPPRIMER_STOCK: ROLE_USER
+        ###
+        ROLE_AFFICHER_TRACABILITY: ROLE_USER
+        ###
+        ROLE_AFFICHER_MISSION: ROLE_USER
+        ROLE_AJOUTER_MISSION: ROLE_USER
+        ROLE_MODIFIER_MISSION: ROLE_USER
+        ROLE_SUPPRIMER_MISSION: ROLE_USER
+        ###
+        ROLE_AJOUTER_MATERIEL: ROLE_USER
+        ROLE_MODIFIER_MATERIEL: ROLE_USER
+        ROLE_SUPPRIMER_MATERIEL: ROLE_USER
+        ###
+        ROLE_AJOUTER_AFFECTATION: ROLE_USER
+        ROLE_MODIFIER_AFFECTATION: ROLE_USER
+        ROLE_SUPPRIMER_AFFECTATION: ROLE_USER
+
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username
+
+  
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        login:
+            pattern:  ^/api/login
+            stateless: true
+            anonymous: true
+            json_login:
+                check_path:               /api/login_check
+                success_handler:          lexik_jwt_authentication.handler.authentication_success
+                failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+            # provider: fos_userbundle
+            # json_login:
+            #     check_path:               /api/login_check
+            #     username_parameter: security.credentials.login
+            #     password_parameter: security.credentials.password
+            #     success_handler:          lexik_jwt_authentication.handler.authentication_success
+            #     failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+            form_login:
+                check_path:               /api/login_check
+                username_parameter: username
+                password_parameter: password
+                success_handler:          lexik_jwt_authentication.handler.authentication_success
+                failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+                require_previous_session: false
+
+
+        api:
+            pattern:   ^/api
+            stateless: true
+            provider: fos_userbundle
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+
+        main:
+            pattern: ^/
+            form_login:
+                provider: fos_userbundle
+                csrf_token_generator: security.csrf.token_manager
+            remember_me:
+                secret:   "%kernel.secret%"
+                lifetime: 31536000
+                path:     home_page
+                domain:   ~
+
+            logout:
+                path: /logout
+                target: /login
+                
+            anonymous:    lazy
+
+
+
+   
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+
+
+ 
+
+    access_control:
+        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        ###
+        - { path: ^/change-password/request, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/change-password/send-email, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/change-password/check-email, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/change-password/reset/([A-Za-z0-9\-\_]+)$', role: IS_AUTHENTICATED_ANONYMOUSLY }
+        ###
+        - { path: ^/accueil, roles: ROLE_USER }
+        ###
+        - { path: ^/profil, roles: ROLE_USER }
+        - { path: ^/profil_change_photo, roles: ROLE_USER }
+        ###
+        - { path: ^/type_nomenclature, roles: ROLE_AFFICHER_TYPE_NOMENCLATURE }
+        - { path: ^/add_type_nomenclature, roles: ROLE_AJOUTER_TYPE_NOMENCLATURE }
+        - { path: ^/edit_type_nomenclature, roles: ROLE_MODIFIER_TYPE_NOMENCLATURE }
+        - { path: ^/delete_type_nomenclature, roles: ROLE_SUPPRIMER_TYPE_NOMENCLATURE }
+        ###
+        - { path: ^/valeur_nomenclature, roles: ROLE_AFFICHER_VALEUR_NOMENCLATURE }
+        - { path: ^/add_valeur_nomenclature, roles: ROLE_AJOUTER_VALEUR_NOMENCLATURE }
+        - { path: ^/edit_valeur_nomenclature, roles: ROLE_MODIFIER_VALEUR_NOMENCLATURE }
+        - { path: ^/delete_valeur_nomenclature, roles: ROLE_SUPPRIMER_VALEUR_NOMENCLATURE }
+        ###
+        - { path: ^/groupe, roles: ROLE_AFFICHER_GROUPE }
+        - { path: ^/add_groupe, roles: ROLE_AJOUTER_GROUPE }
+        - { path: ^/edit_groupe, roles: ROLE_MODIFIER_GROUPE }
+        - { path: ^/delete_groupe, roles: ROLE_SUPPRIMER_GROUPE }
+        ###
+        - { path: ^/fonction, roles: ROLE_AFFICHER_FONCTION }
+        - { path: ^/add_fonction, roles: ROLE_AJOUTER_FONCTION }
+        - { path: ^/edit_fonction, roles: ROLE_MODIFIER_FONCTION }
+        - { path: ^/delete_fonction, roles: ROLE_SUPPRIMER_FONCTION }
+        ###
+        - { path: ^/region, roles: ROLE_AFFICHER_REGION }
+        - { path: ^/add_region, roles: ROLE_AJOUTER_REGION }
+        - { path: ^/edit_region, roles: ROLE_MODIFIER_REGION }
+        - { path: ^/delete_region, roles: ROLE_SUPPRIMER_REGION }
+        ###
+        - { path: ^/user, roles: ROLE_AFFICHER_UTILISATEUR }
+        - { path: ^/add_user, roles: ROLE_AJOUTER_UTILISATEUR }
+        - { path: ^/email_connexion_user, roles: ROLE_AJOUTER_UTILISATEUR }
+        - { path: ^/edit_user, roles: ROLE_MODIFIER_UTILISATEUR }
+        - { path: ^/delete_user, roles: ROLE_SUPPRIMER_UTILISATEUR }
+        - { path: ^/reset_pwd_user, roles: ROLE_SUPPRIMER_UTILISATEUR }
+        - { path: ^/user_fast_authenticate, roles: ROLE_SUPPRIMER_UTILISATEUR }
+        - { path: ^/user_edit_roles, roles: ROLE_SUPPRIMER_UTILISATEUR }
+        ###
+        - { path: ^/fiche, roles: ROLE_AFFICHER_FICHE }
+        - { path: ^/add_fiche, roles: ROLE_AJOUTER_FICHE }
+        - { path: ^/edit_fiche, roles: ROLE_MODIFIER_FICHE }
+        - { path: ^/delete_fiche, roles: ROLE_SUPPRIMER_FICHE }
+        ###
+        - { path: ^/choix, roles: ROLE_AFFICHER_CHOIX }
+        - { path: ^/add_choix, roles: ROLE_AJOUTER_CHOIX }
+        - { path: ^/edit_choix, roles: ROLE_MODIFIER_CHOIX }
+        - { path: ^/delete_choix, roles: ROLE_SUPPRIMER_CHOIX }
+        ###
+        - { path: ^/question, roles: ROLE_AFFICHER_QUESTION }
+        - { path: ^/add_question, roles: ROLE_AJOUTER_QUESTION  }
+        - { path: ^/edit_question, roles: ROLE_MODIFIER_QUESTION  }
+        - { path: ^/delete_question, roles: ROLE_SUPPRIMER_QUESTION  } 
+         ###
+        - { path: ^/sousItem, roles: ROLE_AFFICHER_SOUSITEM }
+        - { path: ^/add_sousItem, roles: ROLE_AJOUTER_SOUSITEM  }
+        - { path: ^/edit_sousItem, roles: ROLE_MODIFIER_SOUSITEM }
+        - { path: ^/delete_sousItem, roles: ROLE_SUPPRIMER_SOUSITEM  }
+         ###
+        - { path: ^/item, roles: ROLE_AFFICHER_ITEM }
+        - { path: ^/add_item, roles: ROLE_AJOUTER_ITEM  }
+        - { path: ^/edit_item, roles: ROLE_MODIFIER_ITEM }
+        - { path: ^/delete_item, roles: ROLE_SUPPRIMER_ITEM  }
+        ###
+        - { path: ^/site, roles: ROLE_AFFICHER_SITE}
+        - { path: ^/add_site, roles: ROLE_AJOUTER_SITE  }
+        - { path: ^/edit_site, roles: ROLE_MODIFIER_SITE }
+        - { path: ^/delete_site, roles: ROLE_SUPPRIMER_SITE  }
+        ###
+        - { path: ^/armoire, roles: ROLE_AFFICHER_ARMOIRE}
+        - { path: ^/add_armoire, roles: ROLE_AJOUTER_ARMOIRE  }
+        - { path: ^/edit_armoire, roles: ROLE_MODIFIER_ARMOIRE }
+        - { path: ^/delete_armoire, roles: ROLE_SUPPRIMER_ARMOIRE  }
+        ###
+        - { path: ^/noeudAcceptance, roles: ROLE_AFFICHER_NOEUDACCEPTANCE}
+        - { path: ^/add_noeudAcceptance, roles: ROLE_AJOUTER_NOEUDACCEPTANCE }
+        - { path: ^/edit_noeudAcceptance, roles: ROLE_MODIFIER_NOEUDACCEPTANCE }
+        - { path: ^/delete_noeudAcceptance, roles: ROLE_SUPPRIMER_NOEUDACCEPTANCE  }
+        - { path: ^/show_noeudAcceptance, roles: ROLE_SHOW_NOEUDACCEPTANCE  }
+        ###
+        - { path: ^/stock, roles: ROLE_AFFICHER_STOCK}
+        - { path: ^/add_stock, roles: ROLE_AJOUTER_STOCK }
+        - { path: ^/edit_stock, roles: ROLE_MODIFIER_STOCK }
+        - { path: ^/delete_stock, roles: ROLE_SUPPRIMER_STOCK }
+        ###
+        - { path: ^/tracability, roles: ROLE_AFFICHER_TRACABILITY}
+        ###
+        - { path: ^/add_materiel, roles: ROLE_AJOUTER_MATERIEL }
+        - { path: ^/edit_materiel, roles: ROLE_MODIFIER_MATERIEL }
+        - { path: ^/delete_materiel, roles: ROLE_SUPPRIMER_MATERIEL }
+        ###
+        - { path: ^/add_affectation, roles: ROLE_AJOUTER_AFFECTATION }
+        - { path: ^/edit_affectation, roles: ROLE_MODIFIER_AFFECTATION }
+        - { path: ^/delete_affectation, roles: ROLE_SUPPRIMER_AFFECTATION }
+
+     
+    
+      
+   

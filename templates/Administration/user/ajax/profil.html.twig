@@ -1,0 +1,68 @@
+<script type="text/javascript">
+
+    $(document).on('click','#close_modal_info',function(){
+
+        $("#user_info_content").css("visibility", "hidden");
+
+        $("#loading_info").css("visibility", "visible");
+    });
+
+
+    /*-----------------------------------------------------------------------*/
+    /*                   start function show info user content               */
+    /*-----------------------------------------------------------------------*/
+
+    $(document).on("click","#show_info",function(){
+
+        var id = $(this).data("id");
+
+        var url ="{{ path('profil_user') }}";
+
+            $.ajax({
+                url: url,
+                data: {id: id},
+                type: "post",
+                dataType: "json", // Change this according to your response from the server.
+                beforeSend:function(){
+                },
+                statusCode:{
+                    200:function(response){
+
+                        $("#img_profile").attr("src",response.url+"/"+response.user[0]['path']);
+
+                        $("#full_name").html(response.user[0]['lastName']+' ' + response.user[0]['firstName']);
+
+                        $("#fonction").html(response.user[0]['fonction']['name']);
+
+                        $("#username").html(response.user[0]['username']);
+
+                        $("#email").html(response.user[0]['email']);
+
+                        $("#mobile").html(response.user[0]['phone']);
+
+                        $("#groupe").html(response.user[0]['groupe']['name']);
+
+                        if(response.user[0]['groupe']['direction'] != null){
+                            $("#id_direction").removeClass("d-none");
+
+                            $("#direction").html(response.user[0]['groupe']['direction']['name']);
+                        }else{
+                             $("#id_direction").addClass("d-none");
+                        }
+
+
+                    }// end 200
+                },// end status code
+                complete:function(){
+                    $("#loading_info").css("visibility", "hidden");
+                    $("#user_info_content").css("visibility", "visible");
+                }
+            }); //fin appel ajax
+
+    });
+
+    /*-----------------------------------------------------------------------*/
+    /*                   end function show info user content                 */
+    /*-----------------------------------------------------------------------*/
+
+</script>

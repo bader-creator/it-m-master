@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+    {% block title %}INT - Error 403{% endblock %}
+
+   {% block stylesheets %}
+        {{ parent() }}
+
+        <!-- CSS INCLUDE -->
+
+        <link rel="stylesheet" type="text/css" href="{{ asset('template_error/bootstrap/css/bootstrap.min.css') }}" />
+
+        <link rel="stylesheet" type="text/css" href="{{ asset('template_error/bootstrap/css/bootstrap-responsive.min.css') }}" />
+
+        <link rel="stylesheet" type="text/css" href="{{ asset('template_error/css/font/font-awesome.css') }}" />
+
+        <link rel="stylesheet" type="text/css" href="{{ asset('template_error/css/style.css') }}" />
+
+
+    {% endblock %}
+
+{% block body %}
+    {{ parent() }}
+
+    <div class="error-wrap error-wrap-404">
+        <div class="metro big terques">
+            <span> OOPS! </span>
+        </div>
+        <div class="metro green">
+            <span style="color:white;"> 4 </span>
+        </div>
+        <div class="metro yellow">
+            <span style="color:white;"> 0 </span>
+        </div>
+        <div class="metro purple">
+            <span style="color:white;"> 3 </span>
+        </div>
+        <div class="metro double red" >
+            <span class="page-txt" style="color:white !important; font-size:40px !important;"> Accès Interdit </span>
+        </div>
+         <div class="metro purple">
+            <a href="{{ path('home_page') }}" title="vers la page d'accueil"><img src="{{ asset('template_error/back.png') }}" /></a>
+        </div>
+
+    </div>
+
+{% endblock %}

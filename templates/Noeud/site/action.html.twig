@@ -1,0 +1,137 @@
+{{ form_start(form, {'attr' :{'class' : 'form-disable', 'novalidate': 'novalidate', 'role': 'form'}}) }} 
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+             <div class="form-group m-b-40">
+
+                    <label>Id Site</label> : <span class=" text-danger">*</span>
+
+                    <input type="text" class="form-control"   name="{{ form.siteId.vars.full_name}}" value="{{ form.siteId.vars.value }}" autofocus>
+
+                    {% if not form.siteId.vars.valid %}
+
+                        {% for error in form.siteId.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.siteId.setRendered %}
+
+              </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="form-group m-b-40">
+
+                    <label>Nom de site</label> : <span class=" text-danger">*</span>
+
+                    <input type="text" class="form-control"   name="{{ form.name.vars.full_name}}" value="{{ form.name.vars.value }}" autofocus>
+
+                    {% if not form.name.vars.valid %}
+
+                        {% for error in form.name.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.name.setRendered %}
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="form-group m-b-40">
+
+                    <label>Longitude</label> : <span class=" text-danger">*</span>
+
+                    <input type="text" class="form-control"   name="{{ form.longitude.vars.full_name}}" value="{{ form.longitude.vars.value }}" autofocus>
+
+                    {% if not form.longitude.vars.valid %}
+
+                        {% for error in form.longitude.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.longitude.setRendered %}
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="form-group m-b-40">
+
+                    <label>Latitude</label> : <span class=" text-danger">*</span>
+
+                    <input type="text" class="form-control"   name="{{ form.latitude.vars.full_name}}" value="{{ form.latitude.vars.value }}" autofocus>
+
+                    {% if not form.latitude.vars.valid %}
+
+                        {% for error in form.latitude.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.latitude.setRendered %}
+
+                </div>
+
+            </div>
+
+            <div class="col-md-12">
+
+                  <div class="form-group m-b-40">
+
+                 <label>Liste des régions</label> : <span class=" text-danger">*</span>
+
+                                            {{ form_widget(form.region, {'attr' : {'class':'select2 form-control'}})}}
+
+                                            {% if not form.region.vars.valid %}
+
+                                                {% for error in form.region.vars.errors  %}
+
+                                                    <span style="color:#f31313;"> {{ error.message }}</span>
+
+                                                {% endfor %}
+
+                                            {% endif %}
+
+                                            {% do form.region.setRendered %}
+                  </div>
+    
+            </div> 
+
+            <div class="col-md-12">
+
+                <a  class="btn btn-danger waves-effect pull-left text-white"
+                    {% if action == "add" %} href="{{ path('site_page') }}" {% elseif action == "edit" %}
+                     href="{{ path('site_page',{selected_row:selected_row,search_input:search_input,page:page}) }}" {% endif %}>Annuler
+                </a>
+
+                {{ form_widget(form.save, {'attr' :{'class':'btn btn-success pull-right'}})}}
+
+            </div><!-- end div action -->
+
+        </div><!-- end div row -->
+
+{{ form_end(form) }}

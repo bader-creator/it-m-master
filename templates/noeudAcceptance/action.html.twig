@@ -1,0 +1,134 @@
+{{ form_start(form, {'attr' :{'class' : 'form-disable', 'novalidate': 'novalidate', 'role': 'form'}}) }} 
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <div class="form-group m-b-40">
+                     <label>Type acceptance</label> : <span class=" text-danger">*</span>
+
+                    {{ form_widget(form.typeAcceptance, {'attr' : {'class':'select2 form-control'}})}}
+
+                    {% if not form.typeAcceptance.vars.valid %}
+
+                        {% for error in form.typeAcceptance.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.typeAcceptance.setRendered %}
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6 div_site d-none">
+
+                <div class="form-group m-b-40">
+                     <label>Liste des sites</label> : <span class=" text-danger">*</span>
+
+                    {{ form_widget(form.site, {'attr' : {'class':'select2 form-control'}})}}
+
+                    {% if not form.site.vars.valid %}
+
+                        {% for error in form.site.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.site.setRendered %}
+
+                </div>
+
+            </div>
+            
+            {# <div class="col-md-6 div_armoire d-none">
+
+                <div class="form-group m-b-40">
+                     <label>Liste des armoires</label> : <span class=" text-danger">*</span>
+
+                    {{ form_widget(form.armoire, {'attr' : {'class':'select2 form-control'}})}}
+
+                    {% if not form.armoire.vars.valid %}
+
+                        {% for error in form.armoire.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.armoire.setRendered %}
+
+                </div>
+
+            </div> #}
+
+            <div class="col-md-6">
+
+                <div class="form-group m-b-40">
+                     <label>Liste Fiches</label> : <span class=" text-danger">*</span>
+
+                    {{ form_widget(form.fiche, {'attr' : {'class':'select2 form-control'}})}}
+
+                    {% if not form.fiche.vars.valid %}
+
+                        {% for error in form.fiche.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.fiche.setRendered %}
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <div class="form-group m-b-40">
+                     <label>Auditeur</label> : <span class=" text-danger">*</span>
+
+                    {{ form_widget(form.userDestinator, {'attr' : {'class':'select2 form-control'}})}}
+
+                    {% if not form.userDestinator.vars.valid %}
+
+                        {% for error in form.userDestinator.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.userDestinator.setRendered %}
+
+                </div>
+
+            </div>
+
+            <div class="col-md-12">
+
+                <a  class="btn btn-danger waves-effect pull-left text-white"
+                    {% if action == "add" %} href="{{ path('noeudAcceptance_page') }}" {% elseif action == "edit" %}
+                     href="{{ path('noeudAcceptance_page',{selected_row:selected_row,search_input:search_input,page:page}) }}" {% endif %}>Annuler
+                </a>
+
+                {{ form_widget(form.save, {'attr' :{'class':'btn btn-success pull-right'}})}}
+
+            </div><!-- end div action -->
+
+        </div><!-- end div row -->
+
+{{ form_end(form) }}

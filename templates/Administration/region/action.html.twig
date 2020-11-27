@@ -1,0 +1,42 @@
+{{ form_start(form, {'attr' :{'class' : 'form-disable', 'novalidate': 'novalidate', 'role': 'form'}}) }} 
+
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <div class="form-group m-b-40">
+
+                    <label>Nom de région</label> : <span class=" text-danger">*</span>
+
+                    <input type="text" class="form-control"   name="{{ form.name.vars.full_name}}" value="{{ form.name.vars.value }}" autofocus>
+
+                    {% if not form.name.vars.valid %}
+
+                        {% for error in form.name.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.name.setRendered %}
+
+                </div>
+        
+            </div> <!-- end div name -->
+
+            <div class="col-md-12">
+
+                <a  class="btn btn-danger waves-effect pull-left text-white"
+                    {% if action == "add" %} href="{{ path('region_page') }}" {% elseif action == "edit" %}
+                     href="{{ path('region_page',{selected_row:selected_row,search_input:search_input,page:page}) }}" {% endif %}>Annuler
+                </a>
+
+                {{ form_widget(form.save, {'attr' :{'class':'btn btn-success pull-right'}})}}
+
+            </div><!-- end div action -->
+
+        </div><!-- end div row -->
+
+{{ form_end(form) }}

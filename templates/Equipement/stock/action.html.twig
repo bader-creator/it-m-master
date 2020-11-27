@@ -1,0 +1,141 @@
+{{ form_start(form, {'attr' :{'class' : 'form-disable', 'novalidate': 'novalidate', 'role': 'form'}}) }} 
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <div class="form-group m-b-40">
+
+                     <label>Référence produit</label> : <span class=" text-danger">*</span>
+
+                    <input type="text" class="form-control"   name="{{ form.ref.vars.full_name}}" value="{{ form.ref.vars.value }}" autofocus>
+
+                    {% if not form.ref.vars.valid %}
+
+                        {% for error in form.ref.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.ref.setRendered %}
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="form-group m-b-40">
+
+                    <label>Nom  produit</label> : <span class=" text-danger">*</span>
+
+                    <input type="text" class="form-control"   name="{{ form.nomProduit.vars.full_name}}" value="{{ form.nomProduit.vars.value }}" autofocus>
+
+                    {% if not form.nomProduit.vars.valid %}
+
+                        {% for error in form.nomProduit.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.nomProduit.setRendered %}
+
+                </div>
+
+            </div>
+
+              <div class="col-md-4">
+            
+                  <div class="form-group m-b-40">
+
+                     <label>Catégorie</label> : <span class=" text-danger">*</span>
+
+                    {{ form_widget(form.category, {'attr' : {'class':'select2 form-control'}})}}
+
+                    {% if not form.category.vars.valid %}
+
+                        {% for error in form.category.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.category.setRendered %}
+
+                </div>
+                 
+             </div>
+
+             <div class="col-md-6 ">
+
+                <div class="form-group m-b-40">
+
+                    <label>Unité Produit</label> : <span class=" text-danger">*</span>
+
+                    <input type="text" class="form-control"   name="{{ form.unite.vars.full_name}}" value="{{ form.unite.vars.value }}" autofocus>
+
+                    {% if not form.unite.vars.valid %}
+
+                        {% for error in form.unite.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.unite.setRendered %}
+
+                </div>
+
+            </div>
+
+              <div class="col-md-6 ">
+
+                <div class="form-group m-b-40">
+
+                    <label>Quantité générale</label> : <span class=" text-danger">*</span>
+
+                    <input type="number" class="form-control"   name="{{ form.quantiteGenerale.vars.full_name}}" value="{{ form.quantiteGenerale.vars.value }}" autofocus>
+
+                    {% if not form.quantiteGenerale.vars.valid %}
+
+                        {% for error in form.quantiteGenerale.vars.errors  %}
+
+                            <span style="color:#f31313;"> {{ error.message }}</span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% do form.quantiteGenerale.setRendered %}
+
+                </div>
+
+            </div>
+
+            
+            
+            
+            <div class="col-md-12">
+
+                <a  class="btn btn-danger waves-effect pull-left text-white"
+                    {% if action == "add" %} href="{{ path('stock_page') }}" {% elseif action == "edit" %}
+                     href="{{ path('stock_page',{selected_row:selected_row,search_input:search_input,page:page}) }}" {% endif %}>Annuler
+                </a>
+
+                {{ form_widget(form.save, {'attr' :{'class':'btn btn-success pull-right'}})}}
+
+            </div><!-- end div action -->
+
+        </div><!-- end div row -->
+
+{{ form_end(form) }}

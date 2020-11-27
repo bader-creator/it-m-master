@@ -1,0 +1,254 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} IT&M - Utilisateurs {% endblock %}
+
+
+{% block body %}
+    {{ parent() }}
+
+    
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="bug-list-search-content">
+                        <form method="get" action="">
+                            <div class="position-relative">
+                                <input type="search" id="search-contacts" name="search_input" value="{{ app.request.get('search_input')}}" class="form-control" placeholder="Recherche avancée...">
+                                <div class="form-control-position">
+                                    <i class="fa fa-search text-size-base text-muted la-rotate-270"></i>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 >Liste des Utilisateurs <span class="badge badge badge-info badge-pill mr-2">{{ users.getTotalItemCount }}</span></h4>
+                    <div class="heading-elements mt-0">
+                        {% if app.user and is_granted('ROLE_AJOUTER_UTILISATEUR') %}
+                            <a class="btn btn-cyan btn-sm" href="{{ path('add_user_page') }}"><i class="fa fa-plus mr-0"></i>
+                                nouvel enregistrement
+                            </a>
+                        {% endif %}
+                        <a class="btn btn-warning btn-sm" href="{{ path('user_page') }}" title="Actualiser"><i class="fa fa-refresh"></i></a>
+                    </div> 
+                </div>  <!-- end card-header -->
+                <div class="card-body">
+                    {% if not users|length %}
+
+                        <div class="alert alert-info" role="alert" style="padding:8px;">
+                            <i class="icon fa fa-info-circle"></i> <span id="content-message"> Aucun enregistrement trouvé</span>
+                        </div>
+
+                    {% else %}
+                    <div class="table-responsive m-t-40">
+                        <table class="display nowrap table table-hover table-bordered" cellspacing="0" width="100%" style="font-size:13.5px;">
+                            <thead>
+                            <tr>
+                                <th>Nom et Prénom</th>
+                                <th>Groupe</th>
+                                <th>N° Téléphone</th>
+                                <th>Email</th>
+                                <th>Statut</th>
+                                {% if app.user and (is_granted('ROLE_AJOUTER_UTILISATEUR') or is_granted('ROLE_MODIFIER_UTILISATEUR') or is_granted('ROLE_RESET_PWD_UTILISATEUR') or is_granted('ROLE_SUPPRIMER_UTILISATEUR') or is_granted('ROLE_FAST_CONNEXION_UTILISATEUR') or is_granted('ROLE_CHANGE_ROLE_UTILISATEUR') ) %}
+                                    <th style="text-align:center;">Actions</th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody style="line-height:40px;">
+                            {% for user in users %}
+                                <tr data-id="{{ user.id }}" {% if user.id == selected_row %} style="Background-color:#dcdfdc;" {% endif %}>
+                                    <td style="min-width:200px;">
+                                        <div class="media">
+                                            <div class="media-left" style="padding-right:5px;">
+                                                <span style="cursor:pointer;" data-toggle="popover" data-content="
+                                                    {% if user.fonction %}<p><strong>Fonction </strong> : {{user.fonction.name}}</p> {% endif %}
+                                                    <p><strong>sexe </strong> :{% if user.sexe == 0 %} Masculin {% else %} Féminin {% endif %}</p>" 
+                                                    data-original-title="Infos" data-trigger="hover" data-html="true">
+                                                    <span class="avatar"><img src="{{ asset('uploads/avatars/'~user.path)}}" height="30" width="100%"  alt="avatar" ></span>
+                                                </span>
+                                            </div>
+                                            <div class="media-body media-middle">
+                                                <a class="media-heading name">{{ user.fullName }}</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="min-width:250px;">{{user.groupe.name}}</td>
+                                    <td style="min-width:70px;">{{user.phone}}</td>
+                                    <td style="min-width:200px;">{{user.email}}</td>
+                                    <td style="min-width:60px;">
+                                        {% if user.enabled == 1 %}
+
+                                            <span class="badge badge badge-success badge-pill mr-2">Actif</span>
+
+                                        {% elseif user.enabled ==0 %}
+
+                                            <span class="badge badge badge-danger badge-pill mr-2">Bloqué</span>
+
+                                        {% endif %}
+                                    </td>
+                                    {% if app.user and (is_granted('ROLE_AJOUTER_UTILISATEUR') or is_granted('ROLE_MODIFIER_UTILISATEUR') or is_granted('ROLE_RESET_PWD_UTILISATEUR') or is_granted('ROLE_SUPPRIMER_UTILISATEUR') or is_granted('ROLE_FAST_CONNEXION_UTILISATEUR') or is_granted('ROLE_CHANGE_ROLE_UTILISATEUR') ) %}
+                                    <td style="text-align: center; min-width:120px; width:120px;">
+                                        <div class="btn-group">
+                                            {% if app.user and is_granted('ROLE_AJOUTER_UTILISATEUR') and not user.isAccountEmailSend %}
+                                                <a class="btn btn-cyan color_menu_link btn-sm mr-1" href="{{ path('email_connexion_user',{id:user.id,search_input:search_input,page:page}) }}" title="Email de connexion">
+                                                    <i class="fa fa-envelope-o text-white"></i>
+                                                </a>
+                                            {% endif %}
+                                            <button type="button" class="btn btn-light dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
+                                            <div class="dropdown-menu animated flipInY">
+                                                <a class="dropdown-item" id="show_info" data-id="{{ user.id }}" style="cursor:pointer;" data-toggle="modal" data-target="#modal_info_user">
+                                                    <i class="fa fa-info-circle" aria-hidden="true" style="color:rgb(255, 0, 221);"></i> Plus d'infos
+                                                </a>
+                                                {% if app.user and is_granted('ROLE_MODIFIER_UTILISATEUR') %}
+                                                    <a class="dropdown-item" href="{{ path('edit_user_page',{id:user.id,search_input:search_input,page:page}) }}" style="cursor:pointer;">
+                                                        <i class="fa fa-pencil-square-o" aria-hidden="true" style="color:blue;"></i> Modifier
+                                                    </a>
+                                                {% endif %}
+                                                {% if app.user and is_granted('ROLE_RESET_PWD_UTILISATEUR') %}
+                                                    <a class="dropdown-item" href="{{ path('reset_pwd_user',{id:user.id,search_input:search_input,page:page}) }}" style="cursor:pointer;">
+                                                        <i class="fa fa-key" aria-hidden="true" style="color:green;"></i> Réinitialiser Pwd
+                                                    </a>
+                                                {% endif %}
+                                                {% if app.user and is_granted('ROLE_SUPPRIMER_UTILISATEUR') %}
+                                                    <a class="dropdown-item" id="delete_data" data-id="{{ user.id }}" data-toggle="modal" data-target="#modal_delete_data">
+                                                        <i class="fa fa-trash-o" style="color:red;"></i> Supprimer
+                                                    </a>
+                                                {% endif %}
+                                                {% if app.user and is_granted('ROLE_FAST_CONNEXION_UTILISATEUR') %}
+                                                    <a class="dropdown-item" data-id="{{ user.id }}"
+                                                        href="{{ path('user_fast_authenticate', {id:user.id}) }}" >
+                                                        <i class="fa fa-sign-in" style="color:#7b1fa2;"></i> Connexion rapide
+                                                    </a>
+                                                {% endif %}        
+                                                {% if app.user and is_granted('ROLE_CHANGE_ROLE_UTILISATEUR') %}
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item bg-danger text-white" href="{{ path('user_edit_roles_page', {id:user.id,search_input:search_input,page:page}) }}">Changer rôles d'accès</a>
+                                                {% endif %}
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                        <div class="navigation pull-right" style="margin-left:20px;margin-bottom:250px;">
+                            {{ knp_pagination_render(users) }}
+                        </div>
+                    </div><!-- end div table-responsive -->
+                    {% endif  %}
+                </div><!-- end div card-body -->
+            </div><!-- end div card -->
+        </div><!-- end div col-12 -->
+    </section><!-- end div section -->
+
+    <!--  start modal suppression data -->
+
+    <div id="modal_delete_data" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false"
+         data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel" style="color:#4b50fc">Suppression enregistrement</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                 <div class="modal-body">
+                    <p style="color:black;">Voulez vous vraiment supprimer cet enregistrement ?</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger waves-effect" data-dismiss="modal" style="color:white;">Annuler</a>
+                    <a  class="btn btn-success waves-effect" style="color:white;" id="confirmer_delete">Confirmer</a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!--  end  modal suppression data -->
+
+
+     <!--  start modal show info utilisateur -->
+
+    <div id="modal_info_user" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-keyboard="false"
+         data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-primary" id="myLargeModalLabel">Profil Utilisateur</h4>
+                    <button type="button" class="close" id="close_modal_info" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body" style="min-height:262px;">
+
+                    <div id="loading_info" style="position:absolute; left:45%; top:30%;">
+                        <div>
+                            <img src="{{ asset('template/app-assets/images/icons/loading.gif')}}" height="70"/>
+                        </div>
+                    </div>
+
+                    {{ include('Administration/user/infos.html.twig') }}
+
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!--  end modal show info utilisateur -->
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+
+        {% for flash_message in app.session.flashBag.get('success') %}
+
+                toastr.success('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+        {% endfor %}
+
+        {% for flash_message in app.session.flashBag.get('info') %}
+
+                toastr.info('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+        {% endfor %}
+
+
+        {% for flash_message in app.session.flashBag.get('warning') %}
+
+                toastr.warning('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+        {% endfor %}
+
+        {% for flash_message in app.session.flashBag.get('error') %}
+
+                toastr.error('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+        {% endfor %}
+
+
+    </script>
+
+    {% include('Administration/user/ajax/delete.html.twig') %}
+
+     {% include('Administration/user/ajax/profil.html.twig') %}
+
+{% endblock %}
+

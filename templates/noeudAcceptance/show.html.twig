@@ -1,0 +1,192 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} IT&M - Réponses fiches {% endblock %}
+
+
+{% block body %}
+    {{ parent() }}
+
+  
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="bug-list-search-content">
+                        <form method="get" action="">
+                            <div class="position-relative">
+                                <input type="search" id="search-contacts" name="search_input" value="{{ app.request.get('search_input')}}" class="form-control" placeholder="Recherche avancée...">
+                                <div class="form-control-position">
+                                    <i class="fa fa-search text-size-base text-muted la-rotate-270"></i>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 >  {{noeudAcceptance.fiche.label}} </h2>
+                 
+                </div> 
+
+            </div> 
+        </div> 
+                
+                
+                  <!-- end card-header -->
+                    <div class="card-body">
+                        {% if not reponses|length %}
+
+                            <div class="alert alert-info" role="alert" style="padding:8px;">
+                                <i class="icon fa fa-info-circle"></i> <span id="content-message"> Aucun enregistrement trouvé</span>
+                            </div>
+
+
+
+
+            <div class="card border-black mb-3" style="max-width: 100rem;">
+                
+                <div class="card-body text-black">
+                
+                      {% elseif noeudAcceptance.fiche.items is not null %}
+                                             
+                            <div id="accordionWrap1" role="tablist" aria-multiselectable="true">
+                                <div class="card collapse-icon panel mb-0 box-shadow-0 border-0">
+                                    {% for item in  noeudAcceptance.fiche.items %}
+                                        <div id="heading-{{noeudAcceptance.fiche.id}}-{{item.id}}" role="tab" class="card-header border-bottom-blue-grey border-bottom-lighten-2">
+                                           <a data-toggle="collapse"  data-parent="#accordionWrap1" href="#accordion-{{noeudAcceptance.fiche.id}}-{{item.id}}" class="h6 blue">{{item.label }}</a> 
+                                        </div>
+
+
+                                        <div id="accordion-{{noeudAcceptance.fiche.id}}-{{item.id}}" role="tabpanel" aria-labelledby="heading-{{noeudAcceptance.fiche.id}}-{{item.id}}" class="collapse show" aria-expanded="true">
+                                            <div class="card-body">
+                                      {% for sousItem in item.sousItems %}
+                                        <div id="heading-{{ item.id}}-{{sousItem.id}}" role="tab" class="card-header border-bottom-blue-grey border-bottom-lighten-2">
+                                            <a data-toggle="collapse" data-parent="#accordionWrap1" href="#accordion-{{ item.id}}-{{sousItem.id}}" aria-expanded="true" aria-controls="accordion-{{ item.id}}-{{sousItem.id}}" class="h6 blue">{{sousItem.label }}</a>
+                                        </div> 
+
+                                        <div id="accordion-{{item.id}}-{{sousItem.id}}" role="tabpanel" aria-labelledby="heading-{{item.id}}-{{sousItem.id}}" class="collapse show" aria-expanded="true">
+                                            <div class="card-body">
+                                                
+                                              
+
+                                                <div class="table-responsive m-t-40">
+                                                    <table class="display nowrap table table-hover  table-bordered" cellspacing="2" width="100%" style="font-size:13.5px;">
+                                                        <thead>
+                                                          <tr>
+                                                            <th style="font-weight: bold;" >Questions</th>
+                                                            <th style="font-weight: bold;">Réponses</th>
+                                                            <th style="text-align:center;">Actions</th>
+                                                         </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                          <td >  {% for question in sousItem.question %} <p class="card-text">{{question.label}}.</p>  {% endfor %} </td>
+                                                           <td >   </td> 
+                                                            <td >  </td>
+                                                            </tr>
+                                                        </tbody>
+
+                                                    </table>
+                                                </div>
+
+
+                                           
+                                            </div>
+                                        </div>
+                                        
+                                     {% endfor %} 
+                                </div>
+                            </div>
+
+                               {% endfor %}
+                                </div>
+                            </div>
+                 
+                
+                </div>
+
+            </div>
+           
+                        <div class="navigation pull-right" style="margin-left:20px;">
+                            {{ knp_pagination_render(reponses) }}
+                        </div>
+                     </div><!-- end div table-responsive --> 
+
+                    {% endif  %}
+                </div><!-- end div card-body -->
+            </div><!-- end div card -->
+        </div><!-- end div col-12 -->
+    </section><!-- end div section --> #}
+
+    <!--  start modal suppression data -->
+
+    { <div id="modal_delete_data" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false"
+         data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel" style="color:#4b50fc">Suppression enregistrement</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                 <div class="modal-body">
+                    <p style="color:black;">Voulez vous vraiment supprimer cet enregistrement ?</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger waves-effect" data-dismiss="modal" style="color:white;">Annuler</a>
+                    <a  class="btn btn-success waves-effect" style="color:white;" id="confirmer_delete">Confirmer</a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!--  end  modal suppression data -->
+
+
+{% endblock %}
+
+
+ {% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+
+        {% for flash_message in app.session.flashBag.get('success') %}
+
+                toastr.success('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+        {% endfor %}
+
+        {% for flash_message in app.session.flashBag.get('info') %}
+
+                toastr.info('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+        {% endfor %}
+
+
+        {% for flash_message in app.session.flashBag.get('warning') %}
+
+                toastr.warning('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+        {% endfor %}
+
+        {% for flash_message in app.session.flashBag.get('error') %}
+
+                toastr.error('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+        {% endfor %}
+
+
+    </script> #}
+
+  
+
+{% endblock %} 
+

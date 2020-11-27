@@ -1,0 +1,60 @@
+<script type="text/javascript">
+
+
+    /*-----------------------------------------------------------------------*/
+    /*                       start function delete  data                     */
+    /*-----------------------------------------------------------------------*/
+
+    $(document).on("click","#delete_data",function(){
+
+        var id = $(this).data("id");
+      
+
+        var url ="{{ path('delete_mission') }}";
+
+
+        $("#confirmer_delete").unbind('click');
+
+        $("#confirmer_delete").on('click', function () {
+
+
+            $.ajax({
+                url: url,
+                data: {id: id},
+                type: "post",
+                dataType: "json", // Change this according to your response from the server.
+                 beforeSend:function(){
+                    $("#modal_delete_data").modal("hide");
+                    $(".body_loading").removeClass("d-none");
+                    $("body").css("opacity",0.4);
+                },
+                statusCode:{
+                    200:function(response){
+
+                        var url = "{{ path('mission_page') }}";
+
+                        window.location.href = url;
+
+                    },201:function(reponse){
+
+                        var msg = reponse.msg;
+
+                        toastr.error(msg, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+                    }
+                },// end status code
+                complete:function(){
+                    $(".body_loading").addClass("d-none");
+                    $("body").css("opacity",1);
+                }
+            }); //fin appel ajax
+
+        });  // end click confirmation delete
+
+    });
+
+    /*-----------------------------------------------------------------------*/
+    /*                     fin stock delete data                          */
+    /*-----------------------------------------------------------------------*/
+
+</script>

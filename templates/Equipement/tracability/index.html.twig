@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} IT&M - Tracabilités {% endblock %}
+
+
+{% block body %}
+    {{ parent() }}
+
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="bug-list-search-content">
+                        <form method="get" action="">
+                            <div class="position-relative">
+                                <input type="search" id="search-contacts" name="search_input" value="{{ app.request.get('search_input')}}" class="form-control" placeholder="Recherche avancée...">
+                                <div class="form-control-position">
+                                    <i class="fa fa-search text-size-base text-muted la-rotate-270"></i>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 >Liste des tracabilités <span class="badge badge badge-info badge-pill mr-2">{{ tracabilities|length }}</span></h4>
+                   
+                    <div class="card-body">
+                        {% if not tracabilities|length %}
+
+                            <div class="alert alert-info" role="alert" style="padding:8px;">
+                                <i class="icon fa fa-info-circle"></i> <span id="content-message"> Aucun enregistrement trouvé</span>
+                            </div>
+
+                        {% else %}
+                        <div class="table-responsive m-t-40">
+                        <table class="display nowrap table table-hover table-bordered" cellspacing="0" width="100%" style="font-size:13.5px;">
+                            <thead>
+                            <tr>
+                                <th style="font-weight: bold;">Nom produit</th>
+
+                                <th style="font-weight: bold;">Quantité </th>
+                                <th style="font-weight: bold;">Action</th>
+                                <th style="font-weight: bold;">Date</th>
+                        
+                                
+                               
+                            </tr>
+                            </thead>
+                            <tbody style="line-height:40px;">
+                             {% for tracability in  tracabilities %}
+                       
+                              <tr data-id="{{ tracability.id }}" {% if tracability.id == selected_row %} style="Background-color:#dcdfdc;" {% endif %}>
+                                    <td >  {{ tracability.stock.nomProduit  }}</td>
+                                    <td >  {{ tracability.quantiteFinale }}</td>
+                                    <td >  {{ tracability.typeAction  }}</td>
+                                    <td >  {{ tracability.dateAction | date('Y-m-d H:i') }}</td>
+                    
+                                </tr>
+
+                             {% endfor %}
+
+                       
+                     </tbody>
+                    </table>
+                        <div class="navigation pull-right" style="margin-left:20px;">
+                            {{ knp_pagination_render(tracabilities) }}
+                        </div>
+                    {# </div><!-- end div table-responsive --> #}
+                    
+
+                        {% endif  %}
+                   </div><!-- end div card-body -->
+            </div><!-- end div card -->
+        </div><!-- end div col-12 -->
+    </section><!-- end div section -->
+
+    
+
+
+{% endblock %}
+
+
+
