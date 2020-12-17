@@ -1,0 +1,60 @@
+<script type="text/javascript">
+
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map-canvas'), {
+            zoom: 7,
+            center: {lat:33.892166, lng: 9.561555499999997}
+        });
+
+            var cpt=0;
+
+            /*------------ debut code mapping----------*/
+
+            {% for item in data %}
+                {% if item.latitude|length and item.longitude|length %}
+                var infoWindow = new google.maps.InfoWindow();
+
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng({{ item.latitude }}, {{ item.longitude }}),
+                    map: map,
+                    icon: '/uploads/avatars/map_icon/icone_site.png',
+                    title: ''
+                });
+
+                cpt++;
+
+               /* --------- tooltip data -------*/
+                    (function(cpt) {
+                        google.maps.event.addListener(marker, "click", function() {
+
+                            infoWindow.close();
+                            infoWindow.setContent(
+                                "<div id='boxcontent' style='font-family:Calibri'><strong style='color:green; font-size:18px; font-weight: bold;'>" + "Infos:" +"</strong><br/>"+
+                                "<span style='font-size:16px;color:#333'><strong> Nom site </strong> : "+ '{{ item.name }}' +"</span><br>"+
+                                "<span style='font-size:16px;color:#333'><strong> Id site </strong> : "+ '{{ item.siteId }}' +"</span><br/>"+
+                                 "<span style='font-size:16px;color:#333'><strong> Région </strong> : "+ '{{ item.region.name }}' +"</span><br/>"+
+                                  "<span style='font-size:16px;color:#333'><strong> Longitude </strong> : "+ {{ item.longitude }} +"</span><br/>"+
+                                   "<span style='font-size:16px;color:#333'><strong> Latitude </strong> : "+ {{ item.latitude }} +"</span><br/>"
+                            );
+                            infoWindow.open(map, this);
+
+                        });
+                   })(cpt);
+
+            /*-------- fin tooltip data ------ */
+
+
+        {% endif %}
+            {% endfor %}
+
+             /*------------ fin code mapping----------*/
+
+
+    
+
+
+    
+
+    }
+
+</script>

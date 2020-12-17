@@ -73,6 +73,7 @@ security:
         ROLE_MODIFIER_NOEUDACCEPTANCE: ROLE_USER
         ROLE_SUPPRIMER_NOEUDACCEPTANCE: ROLE_USER
         ROLE_SHOW_NOEUDACCEPTANCE: ROLE_USER
+        ROLE_AFFICHER_MAP: ROLE_USER
         ###
         ROLE_AFFICHER_STOCK: ROLE_USER
         ROLE_AJOUTER_STOCK: ROLE_USER
@@ -114,13 +115,7 @@ security:
                 check_path:               /api/login_check
                 success_handler:          lexik_jwt_authentication.handler.authentication_success
                 failure_handler:          lexik_jwt_authentication.handler.authentication_failure
-            # provider: fos_userbundle
-            # json_login:
-            #     check_path:               /api/login_check
-            #     username_parameter: security.credentials.login
-            #     password_parameter: security.credentials.password
-            #     success_handler:          lexik_jwt_authentication.handler.authentication_success
-            #     failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+                
             form_login:
                 check_path:               /api/login_check
                 username_parameter: username
@@ -167,7 +162,7 @@ security:
 
     access_control:
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         ###
         - { path: ^/change-password/request, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/change-password/send-email, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -224,35 +219,36 @@ security:
         - { path: ^/delete_choix, roles: ROLE_SUPPRIMER_CHOIX }
         ###
         - { path: ^/question, roles: ROLE_AFFICHER_QUESTION }
-        - { path: ^/add_question, roles: ROLE_AJOUTER_QUESTION  }
-        - { path: ^/edit_question, roles: ROLE_MODIFIER_QUESTION  }
-        - { path: ^/delete_question, roles: ROLE_SUPPRIMER_QUESTION  } 
-         ###
+        - { path: ^/add_question, roles: ROLE_AJOUTER_QUESTION }
+        - { path: ^/edit_question, roles: ROLE_MODIFIER_QUESTION }
+        - { path: ^/delete_question, roles: ROLE_SUPPRIMER_QUESTION }
+        ###
         - { path: ^/sousItem, roles: ROLE_AFFICHER_SOUSITEM }
-        - { path: ^/add_sousItem, roles: ROLE_AJOUTER_SOUSITEM  }
+        - { path: ^/add_sousItem, roles: ROLE_AJOUTER_SOUSITEM }
         - { path: ^/edit_sousItem, roles: ROLE_MODIFIER_SOUSITEM }
-        - { path: ^/delete_sousItem, roles: ROLE_SUPPRIMER_SOUSITEM  }
-         ###
+        - { path: ^/delete_sousItem, roles: ROLE_SUPPRIMER_SOUSITEM }
+        ###
         - { path: ^/item, roles: ROLE_AFFICHER_ITEM }
-        - { path: ^/add_item, roles: ROLE_AJOUTER_ITEM  }
+        - { path: ^/add_item, roles: ROLE_AJOUTER_ITEM }
         - { path: ^/edit_item, roles: ROLE_MODIFIER_ITEM }
-        - { path: ^/delete_item, roles: ROLE_SUPPRIMER_ITEM  }
+        - { path: ^/delete_item, roles: ROLE_SUPPRIMER_ITEM }
         ###
         - { path: ^/site, roles: ROLE_AFFICHER_SITE}
-        - { path: ^/add_site, roles: ROLE_AJOUTER_SITE  }
+        - { path: ^/add_site, roles: ROLE_AJOUTER_SITE }
         - { path: ^/edit_site, roles: ROLE_MODIFIER_SITE }
-        - { path: ^/delete_site, roles: ROLE_SUPPRIMER_SITE  }
+        - { path: ^/delete_site, roles: ROLE_SUPPRIMER_SITE }
         ###
         - { path: ^/armoire, roles: ROLE_AFFICHER_ARMOIRE}
-        - { path: ^/add_armoire, roles: ROLE_AJOUTER_ARMOIRE  }
+        - { path: ^/add_armoire, roles: ROLE_AJOUTER_ARMOIRE }
         - { path: ^/edit_armoire, roles: ROLE_MODIFIER_ARMOIRE }
-        - { path: ^/delete_armoire, roles: ROLE_SUPPRIMER_ARMOIRE  }
+        - { path: ^/delete_armoire, roles: ROLE_SUPPRIMER_ARMOIRE }
         ###
         - { path: ^/noeudAcceptance, roles: ROLE_AFFICHER_NOEUDACCEPTANCE}
         - { path: ^/add_noeudAcceptance, roles: ROLE_AJOUTER_NOEUDACCEPTANCE }
         - { path: ^/edit_noeudAcceptance, roles: ROLE_MODIFIER_NOEUDACCEPTANCE }
-        - { path: ^/delete_noeudAcceptance, roles: ROLE_SUPPRIMER_NOEUDACCEPTANCE  }
-        - { path: ^/show_noeudAcceptance, roles: ROLE_SHOW_NOEUDACCEPTANCE  }
+        - { path: ^/delete_noeudAcceptance, roles: ROLE_SUPPRIMER_NOEUDACCEPTANCE }
+        - { path: ^/show_noeudAcceptance, roles: ROLE_SHOW_NOEUDACCEPTANCE }
+        - { path: ^/map_site, roles: ROLE_AFFICHER_MAP }
         ###
         - { path: ^/stock, roles: ROLE_AFFICHER_STOCK}
         - { path: ^/add_stock, roles: ROLE_AJOUTER_STOCK }

@@ -74,7 +74,7 @@ class Site
 
     /**
      * @ORM\OneToMany(targetEntity=NoeudAcceptance::class, mappedBy="site")
-    * @ApiSubresource(maxDepth=1)
+     * @ApiSubresource(maxDepth=1)
      */
     private $noeudAcceptances;
 

@@ -17,9 +17,11 @@
                 <li class="nav-item {% if current_menu is defined and current_menu == 'accueil' %} active {% endif %}">
                     <a href="{{ path('home_page') }}" ><i class="fa fa-home"></i><span class="menu-title">Accueil</span></a>
                 </li>
-
-
-               
+                       {% if app.user and is_granted('ROLE_AFFICHER_MAP') %}
+                          <li class="nav-item {% if current_menu is defined and current_menu == 'mapping_noeud' %} active {% endif %}">
+                     <a href="{{ path('map_site_page') }}" ><i class="fa fa-map-marker"></i><span class="menu-title">Mapping Noeud</span></a>
+                        </li>
+                         {% endif %} 
                         {% if app.user and is_granted('ROLE_AFFICHER_NOEUDACCEPTANCE') %}
                             <li class="{% if current_menu is defined and current_menu == 'noeudAcceptance' %}active {% endif %}">
                                 <a class="menu-item" href="{{ path('noeudAcceptance_page') }}"><i class="fa fa-bullseye"></i> Noeuds Acceptance </a>
@@ -129,11 +131,11 @@
                             </li>
                         {% endif %}
 
-                          {% if app.user and is_granted('ROLE_AFFICHER_ARMOIRE') %}
+                          {# {% if app.user and is_granted('ROLE_AFFICHER_ARMOIRE') %}
                             <li class="{% if current_menu is defined and current_menu == 'armoire' %}active {% endif %}">
                                 <a class="menu-item" href="{{ path('armoire_page') }}"><i class="fa fa-bullseye"></i> Gestion des armoires </a>
                             </li>
-                        {% endif %}
+                        {% endif %} #}
 
 
                        

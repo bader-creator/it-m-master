@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Site;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
+use Doctrine\ORM\AbstractQuery;
 /**
  * @method Site|null find($id, $lockMode = null, $lockVersion = null)
  * @method Site|null findOneBy(array $criteria, array $orderBy = null)
@@ -31,5 +31,19 @@ class SiteRepository extends ServiceEntityRepository
                         ->getQuery()
                         ->getResult();
 
+    }
+
+
+    public function findSites(){
+
+        $query= $this->createQueryBuilder('s');
+        $query->select("PARTIAL s.{id,name,longitude,latitude,siteId}")
+                 ->addSelect("PARTIAL region.{ id,name }")
+                ->join('s.region','region');
+    
+        return $query->orderBy('s.id', 'DESC')
+                        ->getQuery()
+                        ->getArrayResult(AbstractQuery::HYDRATE_ARRAY);
+    
     }
 }

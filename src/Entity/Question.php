@@ -210,6 +210,9 @@ class Question
 
         return $this;
     }
-
+    public function  getCriticityValue(): string
+    {
+      return self::CRITCITY[$this->criticity];
+    }
   
 }

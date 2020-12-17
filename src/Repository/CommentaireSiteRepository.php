@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\CommentaireSite;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
+use Doctrine\ORM\AbstractQuery;
 /**
  * @method CommentaireSite|null find($id, $lockMode = null, $lockVersion = null)
  * @method CommentaireSite|null findOneBy(array $criteria, array $orderBy = null)
@@ -47,4 +47,23 @@ class CommentaireSiteRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findCommentaires($question_id){
+
+        $query= $this->createQueryBuilder('s');
+
+        $query->select("PARTIAL s.{id, comment,dateCommentaire}")
+                ->addSelect("PARTIAL reponse.{ id,question }")
+                ->join('s.reponse','reponse')
+                ->join('reponse.question','question')
+                ->where('question.id = :question_id ')
+                ->setParameter('question_id' ,$question_id)
+                ->addSelect("PARTIAL userCreator.{ id,lastName,firstName,path,phone }")
+                ->join('s.userCreator','userCreator');
+
+        return $query->orderBy('s.id', 'DESC')
+                        ->getQuery()
+                        ->getResult(AbstractQuery::HYDRATE_ARRAY);
+
+    }
 }

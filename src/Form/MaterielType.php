@@ -28,6 +28,7 @@ class MaterielType extends AbstractType
                 'choice_label' => 'nomProduit',
                 'placeholder' => 'choisir un nom de produit',
                 'attr' => array('style' => 'width: 100%'),
+                'disabled' =>'disabled'
                
             ]) 
             ->add('save', SubmitType::class,['label' => 'Suivant'])

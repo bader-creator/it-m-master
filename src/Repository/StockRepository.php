@@ -39,7 +39,7 @@ class StockRepository extends ServiceEntityRepository
 
         $query= $this->createQueryBuilder('s');
 
-        $query->select("PARTIAL s.{id, nomProduit, quantiteCasse}");
+        $query->select("PARTIAL s.{id, nomProduit, quantiteRestant}");
 
         return $query->orderBy('s.id', 'DESC')
                         ->getQuery()

@@ -1,0 +1,94 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Acceptance {{noeudAcceptance.TypeAcceptanceValue}}</title>   
+     <style>
+    .page {
+       page-break-after: always;
+    }
+    .page:last-child {
+       page-break-after: unset;
+    }
+     .page-num:before { content: counter(page); }
+     footer {position: absolute; bottom: 0;float:right}
+  </style>
+  
+    </head>
+    <body>
+      <div class="page">
+         {% include('noeudAcceptance/images/image.html.twig') %}
+     </div>
+      
+         {# Affichage titre fiche #}
+        <center> <h2>{{ fiche }}</h2></center>
+        <br><br>
+         {# Affichage site caractéristique #}
+          <br><br>
+        <TABLE width=100% border=1  cellspacing="5" cellpadding="5"> 
+            <TR><TD width=50%>Date audit {{noeudAcceptance.TypeAcceptanceValue}}</TD><TD style="width:50%; background-color:#CCFF33;" >{{noeudAcceptance.dateCreation|date('Y-m-d H:i')}}</TD></TR>
+            <TR><TD width=50%>Chef projet</TD><TD style="width:50%; background-color: #CCFF33;"  >{{ noeudAcceptance.userCreator.firstName  }} {{ noeudAcceptance.userCreator.lastName  }} </TD></TR>
+            <TR><TD width=50%>Auditeur</TD><TD style="width:50%; background-color: #CCFF33;"  >{{ noeudAcceptance.userDestinator.firstName  }} {{ noeudAcceptance.userDestinator.lastName  }} </TD></TR>
+        </TABLE>
+        <br><br>
+         {# Affichage site caractéristique #}
+        <TABLE width=100% border=1  cellspacing="5" cellpadding="5"> 
+            <TR><TD width=50%>Id {{noeudAcceptance.TypeAcceptanceValue}}</TD><TD style="width:50%; background-color: #CCFF33;" >{{siteId}}</TD></TR>
+            <TR><TD width=50%>Nom {{noeudAcceptance.TypeAcceptanceValue}}</TD><TD style="width:50%; background-color: #CCFF33;"  >{{siteName}}</TD></TR>
+        </TABLE> 
+         <footer>Page <span class="page-num" ></span></footer>
+      </div>
+        <div class="page">
+        <br>
+        {# Affichage audit Acceptance #}
+        {% for item in  noeudAcceptance.fiche.items %}
+            <TABLE width=100% border=1  cellspacing="0" cellpadding="0">  
+            <TR>
+            <td style="width:55%; background-color: #909090; font-size: 15px;padding: 10px;"><center> {{item.label}}</center></td>
+            <td style="width:10%; background-color: #909090;font-size: 15px;padding: 10px;">  <center>Criticity</center></td>
+            <td style="width:15%; background-color: #909090;font-size: 15px;padding: 10px;">  <center>Réponse</center></td>
+            <td style="font-size: 15px;width:30%; background-color: #909090;padding: 10px;">  <center>Commentaires</center></td>
+            </TR>
+    
+            {% for sousItem in item.sousItems %}
+                    <TR>
+                    <td style="width:55%; background-color:  #CCFF33;"><center>{{sousItem.label}}</center></td>
+                    <td style="width:10%; "></td>
+                    <td style="width:15%;"></td>
+                    <td style="width:30%; "></td>
+                    </TR>
+                {% for question in sousItem.question %} 
+                    {% for response in question.reponses %} 
+                     {% if response.question.id == question.id %}
+                        <TR>
+                        <td style="width:60%;font-size: 13px ;  padding:2px 2px 2px 2px;">{{question.label}}</td>
+                        <td style="width:10%;font-size: 13px "><center>{{question.CriticityValue}}</center></td>
+                        {% if question.type == 0 %}
+                        <td style=" width:10%;font-size: 13px"> <center>{% if response.choixReponse %} {{response.choixReponse.label}} {% endif %}<center></td> 
+                        {% elseif question.type == 1 %}
+                        <td style=" width:10%;font-size: 13px"> <center> {{response.reponse}}  <center></td> 
+                        {% endif %}
+                        <td style="width:50%;font-size: 13px ; padding:2px 2px 2px 2px;">
+                        {% for commentaireSite in response.commentaireSites %} 
+                        {% if commentaireSite.reponse.id == response.id %}
+                            - {{commentaireSite.comment}}
+                        <br>
+                        {% endif %}
+                        {% endfor %}
+                        </td>
+                        </TR>
+                       {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        
+        </TABLE>
+           
+
+
+        {% endfor %}
+        <footer>Page <span class="page-num" ></span></footer>
+        </div>
+            
+    </body>
+
+</html>

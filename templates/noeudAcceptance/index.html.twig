@@ -51,7 +51,10 @@
                                 nouvel enregistrement
                             </a>
                         {% endif %}
-                        <a class="btn btn-warning btn-sm" href="{{ path('noeudAcceptance_page') }}" title="Actualiser"><i class="fa fa-refresh"></i></a>
+                        {% if app.user and is_granted('ROLE_GENERATE_CSV_NOEUDACCEPTANCE') %}
+                           <a class="btn btn-danger btn-sm" href="{{ path('export_csv_global_page') }}" title="Générer csv">   <i class="fa fa-file-excel-o" ></i></a>
+                        {% endif %}
+                         <a class="btn btn-warning btn-sm" href="{{ path('noeudAcceptance_page') }}" title="Actualiser"><i class="fa fa-refresh"></i></a>   
                     </div> 
                 </div>  <!-- end card-header -->
                     <div class="card-body">
@@ -68,11 +71,11 @@
                             <tr>
                                  <th style="font-weight: bold;">Envoyé par</th>
                                 <th style="font-weight: bold;">Noeuds Infos</th>
-                                <th style="font-weight: bold;">Photo</th>
-                                <th style="font-weight: bold;">GPS</th>
+                                <th style="font-weight: bold;"><center>Photo</center></th>
+                                <th style="font-weight: bold;"><center>GPS</center></th>
                                 <th style="font-weight: bold;">Date Audit</th>
                                 <th style="font-weight: bold;">Destiné à</th>
-                                <th style="font-weight: bold;">Statut</th>
+                                <th style="font-weight: bold;"><center>Statut</center></th>
                                 {% if app.user and (is_granted('ROLE_MODIFIER_NOEUDACCEPTANCE') or is_granted('ROLE_SUPPRIMER_NOEUDACCEPTANCE')) %}
                                 <th style="text-align:center;">Actions</th>
                                 {% endif %}
@@ -84,54 +87,50 @@
                               <tr data-id="{{ noeudAcceptance.id }}" {% if noeudAcceptance.id == selected_row %} style="Background-color:#dcdfdc;" {% endif %}>
                                     <td >  {{ noeudAcceptance.userCreator.firstName  }} {{ noeudAcceptance.userCreator.lastName  }}  </td>
                                     <td > {{ noeudAcceptance.site.name}} - {{ noeudAcceptance.site.region.name}} : {{ noeudAcceptance.TypeAcceptanceValue }}</td>
-                                    <td >  
+                                    <td >  <center>
                                          {% if noeudAcceptance.path is not null %}
-                                        <a class="btn btn-primary show_photo_site" data-path="{{noeudAcceptance.path}}" data-toggle="modal"
+                                        <a class="btn btn-primary btn-sm show_photo_site" data-path="{{noeudAcceptance.path}}" data-date={{noeudAcceptance.dateCreation |date("Y-m-d")}}  data-toggle="modal"
                                                data-target="#modal_show_image" >
                                                <i class="icon-camera" style="color:white"></i> 
                                                 {# <i class="mdi mdi-camera" ></i> #}
                                             </a>
                                         {% else %}
-                                            <a class="btn btn-primary " style="cursor: not-allowed" title="Aucun photo à afficher">
+                                            <a class="btn btn-primary btn-sm" style="cursor: not-allowed" title="Aucun photo à afficher">
                                                  <i class="icon-camera" style="color:white"></i> 
                                             </a>
-                                        {% endif %}
+                                        {% endif %}</center>
                                     </td>
-                                    <td >
-                                        <a class="btn btn-warning btn-outline" data-toggle="tooltip" data-placement="top" title=""
+                                    <td ><center>
+                                        <a class="btn btn-warning btn-outline btn-sm" data-toggle="tooltip" data-placement="top" title=""
                                            data-html="true" data-original-title="longitude : {{noeudAcceptance.longitude}}
                                            <br> latitude : {{noeudAcceptance.latitude}}"><i class="fa fa-map-marker" style="color:white" aria-hidden="true"></i>
-                                        </a>
+                                        </a></center>
                                     </td>
                                     <td >{{ noeudAcceptance.dateCreation |date('Y-m-d H:i') }}</td>
                                      <td>{{ noeudAcceptance.userDestinator.FullName }} </td>
-                                    <td >
+                                    <td ><center>
                                          <label class="badge badge-primary ">  {{ noeudAcceptance.statusValue }} </label>
-                                    </td >
+                                    </center></td >
                                       
                                     {% if app.user and (is_granted('ROLE_MODIFIER_NOEUDACCEPTANCE') or is_granted('ROLE_SUPPRIMER_NOEUDACCEPTANCE')) %}
                                     <td style="width:180px;">
-                                        {# {% if app.user and is_granted('ROLE_MODIFIER_NOEUDACCEPTANCE') %}
-                                        <a class="btn btn-linkedin btn-sm"  href="{{ path('edit_noeudAcceptance_page',{id:noeudAcceptance.id,search_input:search_input,page:page}) }}" title="Modifier">
-                                            <i class="fa fa-pencil-square-o text-white"></i>
-                                        </a>
-                                        {% endif %}
-                                        {% if app.user and is_granted('ROLE_SUPPRIMER_NOEUDACCEPTANCE') %}
-                                        <a class="btn btn-danger btn-sm" id="delete_data" data-id="{{noeudAcceptance.id }}" data-toggle="modal" data-target="#modal_delete_data" title="Supprimer">
-                                            <i class="fa fa-trash-o text-white"></i>
-                                        </a> 
-                                           {% endif %}#}
-
+                                     <center>
                                             <div class="btn-group">
-                                                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    Action
+                                                <button type="button" class="btn btn-info dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                   Action 
                                                 </button>
                                                 
                                                     <div class="dropdown-menu animated flipInY">
                                                        {% if app.user and is_granted('ROLE_MODIFIER_NOEUDACCEPTANCE') %}
+                                                         {% if noeudAcceptance.statusValue == 'Nouveau' %}
                                                             <a class="dropdown-item"  href={{ path('edit_noeudAcceptance_page',{id:noeudAcceptance.id,search_input:search_input,page:page}) }} style="cursor:pointer;">
                                                                 <i class="ti-pencil text" aria-hidden="true" style="color:#007bb6;"></i> Modifier
                                                             </a>
+                                                             {% elseif noeudAcceptance.statusValue == 'Terminé' %}
+                                                                <a class="dropdown-item "  style="cursor: not-allowed;pointer-events: auto; color:grey"   href="#"  >
+                                                                <i class="ti-pencil text" aria-hidden="true" style="color:#007bb6;"></i> Modifier
+                                                            </a>
+                                                             {% endif %}
                                                         {% endif %}
 
 
@@ -142,14 +141,45 @@
                                                         {% endif %}
 
                                                         {% if app.user and is_granted('ROLE_SHOW_NOEUDACCEPTANCE') %}
-                                                         <a class="dropdown-item"  href={{ path('show_noeudAcceptance_page',{id:noeudAcceptance.id,search_input:search_input,page:page}) }} >
+                                                              {% if noeudAcceptance.statusValue == 'Nouveau' %}
+                                                                <a class="dropdown-item "  style="cursor: not-allowed;pointer-events: auto; color:grey"   href="#"  >
                                                                 <i class="fa fa-file-text" aria-hidden="true" style="color:#fc4da9;" > </i> Audit {{ noeudAcceptance.TypeAcceptanceValue }} 
-                                                            </a>
+                                                                </a>
+                                                              {% elseif noeudAcceptance.statusValue == 'Terminé' %}
+                                                               <a class="dropdown-item "  href={{ path('show_noeudAcceptance_page',{id:noeudAcceptance.id}) }}  >
+                                                                <i class="fa fa-file-text" aria-hidden="true" style="color:#fc4da9;" > </i> Audit {{ noeudAcceptance.TypeAcceptanceValue }} 
+                                                               </a>
+                                                              {% endif %}
                                                          {% endif %}
+                                                         {% if app.user and is_granted('ROLE_GENERATE_PDF') %}
+                                                           {% if noeudAcceptance.statusValue == 'Nouveau' %}
+                                                            <a class="dropdown-item" style="cursor: not-allowed;pointer-events: auto; color:grey"   href="#"    title="Generate pdf">
+                                                                <i class="fa fa-file-pdf-o" aria-hidden="true" style="color:red;"></i> Générer pdf
+                                                            </a>
+                                                            {% elseif noeudAcceptance.statusValue == 'Terminé' %}
+                                                               <a class="dropdown-item"  target="_blank"  title="Generate pdf" href={{ path('export_pdf_page',{id:noeudAcceptance.id}) }} >
+                                                                <i class="fa fa-file-pdf-o" aria-hidden="true" style="color:red;"></i> Générer pdf
+                                                            </a>
+                                                            {% endif %}
+                                                         {% endif %}
+
+                                                          {% if app.user and is_granted('ROLE_GENERATE_CSV') %} 
+                                                           {% if noeudAcceptance.statusValue == 'Nouveau' %}
+                                                            <a class="dropdown-item" style="cursor: not-allowed;pointer-events: auto; color:grey"   href="#"    title="Generate csv">
+                                                                <i class="fa fa-file-excel-o" aria-hidden="true" style="color:red;"></i> Générer csv
+                                                            </a>
+                                                            {% elseif noeudAcceptance.statusValue == 'Terminé' %}
+                                                               <a class="dropdown-item"    title="Generate csv" href={{ path('export_csv_page',{id:noeudAcceptance.id}) }} >
+                                                                <i class="fa fa-file-excel-o" aria-hidden="true" style="color:red;"></i> Générer csv
+                                                            </a>
+                                                            {% endif %}
+                                                         {% endif %} 
                                                     </div> 
-                                            </div>
+                                            </div></center>
                                        </td>
                                     {% endif %}
+                                                       
+
                                 </tr>
 
 
@@ -195,6 +225,34 @@
     <!--  end  modal suppression data -->
 
 
+
+
+  <!-- debut modal pour show photo -->
+
+    <div id="modal_show_image" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false"
+         data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-primary pull-right" id="myModalLabel"> Photo</h4>
+            
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+               <div class="modal-body" >
+                     <div class="d-none" id="loader_image" style="text-align:center">
+                          <img  src="{{ asset('uploads/avatars/default.gif') }}" >
+                     </div>
+                     <div id="body-image">
+                      </div>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!-- fin modal pour show photo -->
+
 {% endblock %}
 
 
@@ -227,13 +285,15 @@
                 toastr.error('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
 
         {% endfor %}
-
+    
 
     </script>
 
     {% include('noeudAcceptance/ajax/delete.html.twig') %}
 
-     {% include('noeudAcceptance/ajax/change_list.html.twig') %}
+    {% include('noeudAcceptance/ajax/change_list.html.twig') %}
+
+    {% include('noeudAcceptance/ajax/show_image_noeud.html.twig') %}
 
 {% endblock %}
 

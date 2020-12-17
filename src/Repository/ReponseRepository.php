@@ -62,4 +62,15 @@ class ReponseRepository extends ServiceEntityRepository
                         ->getResult();
 
     }
+
+    
+    public function findReponse($id)
+    {
+        return $this->createQueryBuilder('r')
+            ->join('r.choixReponse','v')
+            ->Where('r.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getArrayResult();
+    } 
 }

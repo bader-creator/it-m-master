@@ -22,7 +22,7 @@
                 data: {id: id},
                 type: "post",
                 dataType: "json", // Change this according to your response from the server.
-                 beforeSend:function(){
+                beforeSend:function(){
                     $("#modal_delete_data").modal("hide");
                     $(".body_loading").removeClass("d-none");
                     $("body").css("opacity",0.4);

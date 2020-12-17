@@ -23,16 +23,32 @@
     {% endif %}
 
     
-    {% if action == "editMateriel" or action == "addMateriel" %}
+    {% if  action == "addMateriel"  %}
     <section class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h5>{% if action =="addMateriel" %} Nouvel {% else %} Modifier {% endif %} Enregistrement</h5>
+                    <h5>{% if action =="addMateriel" %} Nouvel {% endif %} Enregistrement</h5>
                 </div>
                 <div class="card-body">
                     {{ include('Equipement/mission/actionMateriel.html.twig') }}
-                    
+                  
+                </div>
+            </div>
+        </div>
+    </section>
+   {% endif %}
+
+      {% if action == "editMateriel" %}
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{% if action =="editMateriel" %}  Modifier {% endif %} Enregistrement</h5>
+                </div>
+                <div class="card-body">
+                  
+                    {{ include('Equipement/mission/editMateriel.html.twig') }}
                 </div>
             </div>
         </div>
@@ -100,43 +116,63 @@
                             </div>
 
                         {% else %}
+
+
+                        
+                             
+                     
+
+            
+
+                                 <div id="accordionWrap1" role="tablist" aria-multiselectable="true">
+                        
                            {% for mission in missions %}
 
                                 <div class="card mb-3" style="max-width: 100rem;">
+                                <div class="card collapse-icon panel mb-0 box-shadow-0 border-0" >
+                                             <div id="heading-{{mission.id}}" role="tab" class="card-header border-bottom-blue-grey border-bottom-lighten-2">
+                                    <a  data-toggle="collapse" data-parent="#accordionWrap1" href="#accordion-{{mission.id}}" aria-expanded="true  " aria-controls="accordion-{{mission.id}}" > <strong>{{ mission.site.name }}</strong></a>
                                 
-                                    <div class="card-header bg-transparent" style="border-bottom:solid 1px black;">
+                                       
+                                   
 
-                                        <strong>{{ mission.site.name }}</strong>
-
-                                    {% if app.user and (is_granted('ROLE_MODIFIER_MISSION') or is_granted('ROLE_SUPPRIMER_MISSION') or is_granted('ROLE_AJOUTER_MATERIEL') ) %}
+                                    {% if app.user and (is_granted('ROLE_MODIFIER_MISSION') or is_granted('ROLE_SUPPRIMER_MISSION') or is_granted('ROLE_AJOUTER_MATERIEL') or is_granted('ROLE_AJOUTER_AFFECTATION') ) %}
                                         {% if app.user and is_granted('ROLE_MODIFIER_MISSION') %}
                                               {% if test !=  true %} 
-                                                <a class="btn btn-linkedin btn-sm pull-right"   href="{{ path('edit_mission_page',{id:mission.id,search_input:search_input,page:page}) }}" title="Modifier">
+                                                <a class="btn btn-linkedin btn-sm pull-right"   href="{{ path('edit_mission_page',{id:mission.id,search_input:search_input,page:page}) }}" title="Modifier une mission">
                                                     <i class="fa fa-pencil-square-o text-white"></i>
                                                 </a>
                                               {% endif %}
                                         {% endif %}
                                         {% if app.user and is_granted('ROLE_SUPPRIMER_MISSION') %}
-                                                <a class="btn btn-danger btn-sm pull-right"  style="margin-right:5px;" id="delete_data" data-id="{{ mission.id }}" data-toggle="modal" data-target="#modal_delete_data" title="Supprimer">
+                                                <a class="btn btn-danger btn-sm pull-right"  style="margin-right:5px;" id="delete_data" data-id="{{ mission.id }}" data-toggle="modal" data-target="#modal_delete_data" title="Supprimer une mission">
                                                     <i class="fa fa-trash-o text-white"></i>
                                                 </a>
                                         {% endif %}
 
                                         {% if app.user and is_granted('ROLE_AJOUTER_MATERIEL') %}
                                        
-                                                <a class="btn btn-success btn-sm pull-right" href="{{ path('mat_page',{id:mission.id,search_input:search_input,page:page}) }}"  style="margin-right:5px"><i class="fa fa-plus " title="Ajouter Matériels"></i>
+                                                <a class="btn btn-success btn-sm pull-right" href="{{ path('mat_page',{id:mission.id,search_input:search_input,page:page}) }}"  style="margin-right:5px"><i class="fa fa-plus " title="Ajouter des Matériels"></i>
+                                               </a>
+                                        {% endif %}
+
+                                          {% if app.user and is_granted('ROLE_AJOUTER_AFFECTATION') %}
+                                       
+                                                <a class="btn btn-warning btn-sm pull-right" href="{{ path('add_affectation_page',{id:mission.id,search_input:search_input,page:page}) }}"  style="margin-right:5px"><i class="fa fa-users " title="Affecter des utilisateurs"></i>
                                                </a>
                                         {% endif %}
 
                                         {% endif %}
-                                    
-                                       
-                                    </div> 
+                                     </div></div>
+                                        
  {# table produit  #}
-
+   <div id="accordion-{{mission.id}}" role="tabpanel" aria-labelledby="heading-{{mission.id}}" class="collapse show" aria-expanded="true">
+                                    <div class="card-body">
+                                     
+                                   
  
                               <div class="row">
-                                  <div class="col">
+                                  <div class="col-12">
                                         <div class="table-responsive m-t-40">
                                               <table class="display nowrap table table-hover table-bordered" cellspacing="0" width="100%" style="font-size:13.5px;">
                                                     <thead>
@@ -188,7 +224,7 @@
                                 </div>
                             </div>
                             {# table affectation #}
-                             <div class="col">
+                             <div class="col-12">
                                  <div class="table-responsive m-t-40">
                                               <table class="display nowrap table table-hover table-bordered" cellspacing="0" width="100%" style="font-size:13.5px;">
                                                     <thead>
@@ -234,6 +270,8 @@
 
 
                                                 {% endfor %}  
+
+
                                             </tbody>
                                             </table> 
                                                 
@@ -241,11 +279,19 @@
                                     </div>
                                 </div>
                             </div>
-
+</div>
+                                </div>
                           {% endfor %}  
+
+                             </div>
+                    </div>
+
+                     
+                           
                         <div class="navigation pull-right" style="margin-left:20px;">
                             {{ knp_pagination_render(missions) }}
                         </div>
+                        
                     {# </div><!-- end div table-responsive --> #}
 
                         {% endif  %}
@@ -286,7 +332,7 @@
 {% block javascripts %}
     {{ parent() }}
 
-    <script  src="http://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>  
+    {# <script  src="http://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>   #}
     
 
     <script type="text/javascript">

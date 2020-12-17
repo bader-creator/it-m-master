@@ -67,8 +67,8 @@
                             <thead>
                             <tr>
                                 <th>Nom de question</th>
-                                   <th>Criticité</th>
-                                 <th>Choix</th>
+                                   <center> <th>Criticité</th> </center>
+                                  <center><th>Choix</th> </center>
                                 {% if app.user and (is_granted('ROLE_MODIFIER_QUESTION') or is_granted('ROLE_SUPPRIMER_QUESTION')) %}
                                 <th style="text-align:center;">Actions</th>
                                 {% endif %}
@@ -79,16 +79,16 @@
                                 <tr data-id="{{ question.id }}" {% if question.id == selected_row %} style="Background-color:#dcdfdc;" {% endif %}>
                                     <td >{{ question.label }}</td>
                                     {% if question.criticity  == 0 %}
-                                     <td >Mineure</td>
+                                      <td ><center>Mineure</center></td> 
                                     {% elseif question.criticity  == 1 %}
-                                     <td >Majeure</td>
+                                      <td ><center>Majeure</center> </td>
                                     {% elseif  question.criticity  == 2 %}
-                                     <td >Bloquante</td>
+                                    <td >  <center>Bloquante</center> </td>
                                     {% endif %}
                                      <td style="width:200px;">
                                         {% if question.choix is not null %}
                                             {% for choix in question.choix %}
-                                                <label class="badge badge-primary ">{{ choix.label }}</label>
+                                               <center><label class="badge badge-primary ">{{ choix.label }}</label></center> 
                                             {% endfor %}
                                         {% endif %}
                                     </td>

@@ -93,10 +93,13 @@
         "version": "1.3.8"
     },
     "doctrine/reflection": {
-        "version": "1.2.1"
+        "version": "1.2.2"
     },
     "doctrine/sql-formatter": {
         "version": "1.1.1"
+    },
+    "dompdf/dompdf": {
+        "version": "v0.8.6"
     },
     "egulias/email-validator": {
         "version": "2.1.19"
@@ -116,11 +119,20 @@
     "friendsofsymfony/user-bundle": {
         "version": "v2.1.2"
     },
+    "hshn/base64-encoded-file": {
+        "version": "v2.1.0"
+    },
     "knplabs/knp-components": {
         "version": "v2.4.2"
     },
     "knplabs/knp-paginator-bundle": {
         "version": "v5.3.0"
+    },
+    "laminas/laminas-code": {
+        "version": "3.5.1"
+    },
+    "laminas/laminas-eventmanager": {
+        "version": "3.3.0"
     },
     "laminas/laminas-zendframework-bridge": {
         "version": "1.1.1"
@@ -140,8 +152,20 @@
             "./config/packages/lexik_jwt_authentication.yaml"
         ]
     },
+    "maennchen/zipstream-php": {
+        "version": "2.1.0"
+    },
+    "markbaker/complex": {
+        "version": "2.0.0"
+    },
+    "markbaker/matrix": {
+        "version": "2.0.0"
+    },
     "monolog/monolog": {
         "version": "1.25.5"
+    },
+    "myclabs/php-enum": {
+        "version": "1.7.7"
     },
     "namshi/jose": {
         "version": "7.2.3"
@@ -164,6 +188,12 @@
     "ocramius/proxy-manager": {
         "version": "2.2.3"
     },
+    "phenx/php-font-lib": {
+        "version": "0.5.2"
+    },
+    "phenx/php-svg-lib": {
+        "version": "v0.3.3"
+    },
     "php": {
         "version": "7.3"
     },
@@ -176,17 +206,35 @@
     "phpdocumentor/type-resolver": {
         "version": "1.3.0"
     },
+    "phpoffice/phpspreadsheet": {
+        "version": "1.15.0"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
     "psr/container": {
         "version": "1.0.0"
     },
+    "psr/http-client": {
+        "version": "1.0.1"
+    },
+    "psr/http-factory": {
+        "version": "1.0.1"
+    },
+    "psr/http-message": {
+        "version": "1.0.1"
+    },
     "psr/link": {
         "version": "1.0.0"
     },
     "psr/log": {
         "version": "1.1.3"
+    },
+    "psr/simple-cache": {
+        "version": "1.0.1"
+    },
+    "sabberworm/php-css-parser": {
+        "version": "8.3.1"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",

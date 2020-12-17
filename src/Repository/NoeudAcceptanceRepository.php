@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\NoeudAcceptance;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
+use Doctrine\ORM\AbstractQuery;
 /**
  * @method NoeudAcceptance|null find($id, $lockMode = null, $lockVersion = null)
  * @method NoeudAcceptance|null findOneBy(array $criteria, array $orderBy = null)
@@ -61,4 +61,37 @@ class NoeudAcceptanceRepository extends ServiceEntityRepository
                         ->getResult();
 
     }
+
+    public function findQuestion($id){
+
+        return $this->createQueryBuilder('r')
+                    ->select(['r','c'])
+                    ->join('r.choixReponse','c')
+                    ->where('r.id =:id')
+                    ->setParameter('id',$id)
+                    ->getQuery()
+                    ->getResult();
+
+    }
+
+//     $query = $em->createQuery('select v.id, v.name from 
+//     SFMNomenclatureBundle:ValeurNomenclature v join v.typeNomenclature t
+//    where t.codeType =:codetype and v.code !=:code')
+// ->setParameters(array('codetype'=>'code05','code'=>'T04'))
+// ->getArrayResult();
+
+public function findNoeuds(){
+
+    $query= $this->createQueryBuilder('s');
+    $query->select("PARTIAL s.{id}")
+             ->addSelect("PARTIAL site.{ id,name }")
+            ->join('s.site','site');
+            // ->addSelect("PARTIAL fiche.{ id,label }")
+            // ->join('s.fiche','fiche');
+
+    return $query->orderBy('s.id', 'DESC')
+                    ->getQuery()
+                    ->getArrayResult(AbstractQuery::HYDRATE_ARRAY);
+
+}
 }

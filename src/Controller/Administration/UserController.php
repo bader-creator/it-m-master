@@ -23,7 +23,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 class UserController extends AbstractController {
 
 
@@ -503,5 +504,46 @@ class UserController extends AbstractController {
     
     }
 
+/**
+     * @Route("/setTokenFireBase", methods={"POST"}, name="grh-user-set-token-fairebase")
+     *
+     * @param Request $request
+     * @param LoggerInterface $logger
+     * @return JsonResponse
+     */
+    public function setTokenFireBase(Request $request, LoggerInterface $logger, $id = null)
+    {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
 
+        if (strpos($request->headers->get('Content-Type'), 'application/json') === 0) {
+            $content = $request->getContent();
+
+            $parameters = json_decode($content, true);
+        } else {
+            $parameters['id'] = $request->get('id');
+            $parameters['token'] = $request->get('token');
+        }
+
+        /** @var User $personnel */
+        $personnel = $em->getRepository(User::class)->find($parameters['id']);
+
+        $data = $parameters;
+
+        if (!empty($personnel)) {
+            if (!empty($personnel) && !empty($parameters['token']) && $parameters['token'] != 'null') {
+                $personnel->setDeviseToken($parameters['token']);
+
+                $data['id'] = $personnel->getId();
+
+                $em->persist($personnel);
+                $em->flush();
+            }
+        }
+
+     //   $logger->info(sprintf('* %s ==> %s', setTokenDevise(), json_encode(@compact('parameters', 'data'))));
+
+        $response = new JsonResponse($data, 200);
+        return $response;
+    }
 } // fin UserController

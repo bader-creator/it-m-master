@@ -58,7 +58,7 @@ $("#noeud_acceptance_typeAcceptance").change(function(){
 
     var id_type = $("#noeud_acceptance_typeAcceptance").val();
 
-    var id_selected_fiche = "";/*'{#% if noeudAcceptance.fiche %} {{ noeudAcceptance.fiche.id }} {% endif %#}';*/
+    var id_selected_fiche = "{{id_selected_fiche}}"
 
     if(id_type!=""){
 

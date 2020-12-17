@@ -1,71 +1,95 @@
 <script type="text/javascript">
   var produits ={{stock |json_encode | raw}};
-
-$(document).ready(function(){
-var array_produit=[];
+  var  mat ={{ mat |json_encode | raw}};
+   var array_produit=[];
  var array_quantite=[];
  var array=[];
-  console.log(produits)
-  var i=0; 
+
+$(document).ready(function(){
+
+
+ $.each( mat, function( key, val ) {
+    array.push((val.stock.id).toString())
+  });
+ console.log(array,'array') 
+
+var i=0; 
   
 $('#item_table').append('<input type="hidden" name="id" value="{{ mission is defined ? mission.id : 0 }}" />');
  $(document).on('click', '.add', function(){
   i++;
+  
   var html = '';
   html += '<tr>';
+
   html += '<td><select name="produits['+i+']" class="form-control item_unit"  placeholder="Nom produit"><option disabled selected>-select Nom produit-</option></select></td>';
-  html += '<td><input type="text" name="item_quantity['+i+']" class="form-control item_quantity" placeholder="Quantité"/></td>';
-  html += '<td><button type="button" name="remove['+i+']" class="btn btn-danger  remove">x</button></td></tr>';
+  html += '<td><input type="number" name="item_quantity['+i+']" class="form-control item_quantity" placeholder="Quantité"/></td>';
+  // html += '<td><input type="text" name="quantiteRestant['+i+']" class="form-control quantiteRestant" placeholder="Quantité restante" disabled/></td>';
+  html += '<td><center><button type="button" name="remove['+i+']" class="btn btn-danger  remove">x</button></center></td></tr>';
     
   $('#item_table').append(html);
+
 
   $.each(produits,function(key, value){
   $('select[name="produits['+i+']"]').append('<option value="'+value.id+'">'+value.nomProduit+'</option>')
  
-})
+});
 
- });
+ 
+});
 
  $(document).on('click', '.remove', function(){
+  i--
  $(this).closest('tr').remove();
+   $('.add').prop('disabled', false);
  });
+
  
  $( "#insert_form" ).submit(function( event ) {
    var x = $( this ).serialize();
   event.preventDefault();
- 
+
   var error = '';
+
+
   $('.item_quantity').each(function(){
-   var count = 1;
+
    if($(this).val() == '')
    {
-    error += "<p>Enter Item Quantity at "+count+" Row</p>";
-   toastr.error(error, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+   
+  console.log($(this).val(),'$(this).val()')
+  error += "<p> Sélectionner une quantité </p>";
+   $('.add').prop('disabled', true);
    }
-   count = count + 1;
+ 
   });
   
   $('.item_unit').each(function(){
-   var count = 1;
-   
+
+    
    if($(this).val() == '')
-
    {
-    error += "<p>Select Unit at "+count+" Row</p>";
-     toastr.error(error, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+      
+       console.log($(this).val(),'$(this).val()')
+        error += "<p>Sélectionner un produit</p>";
+         $('.add').prop('disabled', true);
    }
-  array_produit.pop();
-   count = count + 1;
-  });
+   array_produit.push($(this).val());
 
-$('.item_unit').each(function(){
-   if($(this).val() != ''){
-     array_produit.push($(this).val()); 
+  });
+ console.log(array_produit,'array_produit') 
+ 
+ var hasDuplicate = array_produit.some((val, i) => array_produit.indexOf(val) !== i);
+ if(hasDuplicate == true){
+    error += "<p> Vous n'avez pas le droit d'ajouter le même produit  </p>";
 }
-  });
-   console.log(array_produit,'array_produit')
+ 
+var uneCorrespondanceEntreProdArrayetArray = array_produit.some((nombre) => array.includes(nombre))
+if(uneCorrespondanceEntreProdArrayetArray == true){
+  error += "<p> Vous n'avez pas le droit d'ajouter le même produit  </p>";
+   window.location.href = "{{ path('mission_page') }}";
+}
 
- //embbad boucle for push kol array andha qnte w produit embaad nbaathom fl ajax
  var url ="{{ path('add_materiel_page') }}";
  
   if(error == '')
@@ -73,7 +97,7 @@ $('.item_unit').each(function(){
    $.ajax({
     url:url,
     method:"POST",
-    data: $( this ).serialize(),
+    data:x,
     dataType: "json",
     success:function(data)
     {
@@ -89,7 +113,10 @@ $('.item_unit').each(function(){
   }
   else
   {
-   $('#error').html('<div class="alert alert-danger">'+error+'</div>');
+  toastr.error(error, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+  array_produit=[]
+  array_quantite=[];
+ // console.log(array_produit,'arrayDelete')
   }
  });
  

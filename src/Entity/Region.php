@@ -9,6 +9,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -36,11 +37,13 @@ class Region
     private $name;
 
     /**
+     * @ApiSubresource(maxDepth=1)
      * @ORM\OneToMany(targetEntity=Site::class, mappedBy="region")
      */
     private $sites;
 
     /**
+     * @ApiSubresource(maxDepth=1)
      * @ORM\OneToMany(targetEntity=Armoire::class, mappedBy="region")
      */
     private $armoires;

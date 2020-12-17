@@ -1,0 +1,45 @@
+{% extends ('base.html.twig') %}
+
+
+{% block body %}
+    {{ parent() }}
+
+    <style>
+        .comment-text p{
+            max-height:100%;
+        }
+    </style>
+
+    <br>
+
+
+    <div class="row">
+
+        <div class="col-12">
+
+             <div id="map-canvas" style="width: 100%; height: 650px; border: solid 2px black;"></div>
+
+        </div>
+
+    </div> <!-- end row -->
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+         $("#sidebarnav a:contains('Mapping Sites')").parent().addClass('active');
+    </script>
+
+    <script async defer
+           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDT4Asj8g4bnE53f6chKGa3kq0coLYC0XE&callback=initMap">
+    </script>
+
+
+    {% include('Map/ajax/mapping.html.twig') %}
+
+
+{% endblock %}

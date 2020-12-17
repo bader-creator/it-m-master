@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use SFM\AcceptanceBundle\Entity\TracabilityResponse;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Annotation\ApiSubresource;
@@ -106,7 +107,6 @@ class User extends BaseUser
 
     /**
      * @ORM\OneToMany(targetEntity=NoeudAcceptance::class, mappedBy="userCreator")
-
      * @ApiSubresource(maxDepth=1)
      */
     private $noeudAcceptances;
@@ -124,10 +124,21 @@ class User extends BaseUser
     private $missions;
 
     /**
-     * @ORM\OneToMany(targetEntity=Affectation::class, mappedBy="livreur")
+     * @ORM\OneToMany(targetEntity=Affectation::class, mappedBy="userCreator")
      * @ApiSubresource(maxDepth=1)
      */
     private $affectations;
+
+    /**
+     * @ORM\OneToMany(targetEntity=TracabilityReponse::class, mappedBy="userCreator")
+     * @ApiSubresource(maxDepth=1)
+     */
+    private $tracabilityReponses;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CommentaireSite::class, mappedBy="userCreator")
+     */
+    private $commentaireSites;
 
     /**
      * @ORM\OneToMany(targetEntity=ImageSite::class, mappedBy="userCreator")
@@ -135,12 +146,14 @@ class User extends BaseUser
     private $imageSites;
 
     /**
-     * @ORM\OneToMany(targetEntity=CommentaireSite::class, mappedBy="userCreator")
+     * @ORM\Column(type="text", nullable=true)
      */
-    private $commentaireSites;
+    private $deviseToken;
 
 
+  
 
+   
   
 
     public function __construct()
@@ -150,6 +163,8 @@ class User extends BaseUser
         $this->tracabilities = new ArrayCollection();
         $this->missions = new ArrayCollection();
         $this->affectations = new ArrayCollection();
+        $this->tracabilityReponses = new ArrayCollection();
+        $this->commentaireSites = new ArrayCollection();
         $this->imageSites = new ArrayCollection();
         $this->commentaireSites = new ArrayCollection();
     }
@@ -389,6 +404,39 @@ class User extends BaseUser
     }
 
     /**
+     * @return Collection|TracabilityReponse[]
+     */
+    public function getTracabilityReponses(): Collection
+    {
+        return $this->tracabilityReponses;
+    }
+
+    public function addTracabilityReponse(TracabilityReponse $tracabilityReponse): self
+    {
+        if (!$this->tracabilityReponses->contains($tracabilityReponse)) {
+            $this->tracabilityReponses[] = $tracabilityReponse;
+            $tracabilityReponse->setUserCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTracabilityReponse(TracabilityReponse $tracabilityReponse): self
+    {
+        if ($this->tracabilityReponses->contains($tracabilityReponse)) {
+            $this->tracabilityReponses->removeElement($tracabilityReponse);
+            // set the owning side to null (unless already changed)
+            if ($tracabilityReponse->getUserCreator() === $this) {
+                $tracabilityReponse->setUserCreator(null);
+            }
+        }
+
+
+        return $this;
+    }
+
+
+    /**
      * @return Collection|ImageSite[]
      */
     public function getImageSites(): Collection
@@ -450,10 +498,22 @@ class User extends BaseUser
         return $this;
     }
 
+ 
+
+    public function getDeviseToken(): ?string
+    {
+        return $this->deviseToken;
+    }
+
+    public function setDeviseToken(?string $deviseToken): self
+    {
+        $this->deviseToken = $deviseToken;
+
+        return $this;
+    }
 
 
-
-
+    
     
 
    

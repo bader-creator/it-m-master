@@ -21,6 +21,7 @@ class Reponse
 
     /**
      * @ORM\ManyToOne(targetEntity=Choix::class, inversedBy="reponses")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $choixReponse;
 
@@ -49,10 +50,6 @@ class Reponse
      */
     private $tracabilityReponses;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $type;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -203,17 +200,6 @@ class Reponse
         return $this;
     }
 
-    public function getType(): ?int
-    {
-        return $this->type;
-    }
-
-    public function setType(int $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
 
     public function getReponse(): ?string
     {

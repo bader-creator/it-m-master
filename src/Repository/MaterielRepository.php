@@ -6,6 +6,7 @@ use App\Entity\Materiel;
 use App\Entity\Mission;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\AbstractQuery;
 
 /**
  * @method Materiel|null find($id, $lockMode = null, $lockVersion = null)
@@ -92,18 +93,42 @@ class MaterielRepository extends ServiceEntityRepository
             ->AndWhere('m.stock = :val2')
             ->setParameters(array('val'=> $mission,'val2'=> $stock))
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
     }
-    
-    // public function findMaterialByMissionAndUser($mission,$user)
-    // {
-    //     return $this->createQueryBuilder('m')
-    //         ->Where('m.mission = :val')
-    //         ->AndWhere('m.user = :val2')
-    //         ->setParameters(array('val'=> $mission,'val2'=> $user))
-    //         ->getQuery()
-    //         ->getArrayResult();
-    // } 
+    public function findMaterials(){
 
+        $query= $this->createQueryBuilder('s');
+
+        $query->select("PARTIAL s.{id,  quantiteSortie}")
+                ->addSelect("PARTIAL stock.{ id,nomProduit }")
+                ->join('s.stock','stock');
+            //     ->Where('s.id = :id')
+            //    ->setParameter('id', $id);
+             
+
+        return $query->orderBy('s.id', 'DESC')
+                        ->getQuery()
+                        ->getResult(AbstractQuery::HYDRATE_ARRAY);
+
+    }
+    public function findMaterialsByMission($mission_id){
+
+        $query= $this->createQueryBuilder('s');
+
+        $query->select("PARTIAL s.{id,  quantiteSortie}")
+                ->addSelect("PARTIAL stock.{ id,nomProduit }")
+                ->join('s.stock','stock')
+                ->addSelect("PARTIAL mission.{ id }")
+                ->join('s.mission','mission')
+                ->where('mission.id = :mission_id ')
+                ->setParameter('mission_id' ,$mission_id);
+              
+             
+
+        return $query->orderBy('s.id', 'DESC')
+                        ->getQuery()
+                        ->getResult(AbstractQuery::HYDRATE_ARRAY);
+
+    }
     
 }

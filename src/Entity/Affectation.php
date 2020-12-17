@@ -47,6 +47,11 @@ class Affectation
      */
     private $acceptateur;
 
+       /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="affectations",cascade={"remove"})
+     */
+     private $userCreator;
+
     /**
      * @ORM\ManyToOne(targetEntity=Mission::class, inversedBy="affectations",cascade={"remove"})
      */
@@ -79,6 +84,17 @@ class Affectation
         return $this;
     }
 
+    public function getUserCreator(): ?User
+    {
+        return $this->userCreator;
+    }
+
+    public function setUserCreator(?User $userCreator): self
+    {
+        $this->userCreator = $userCreator;
+
+        return $this;
+    }
     public function getInstallateur(): ?User
     {
         return $this->installateur;

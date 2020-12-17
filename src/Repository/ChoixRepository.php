@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Choix;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
+use Doctrine\ORM\AbstractQuery;
 /**
  * @method Choix|null find($id, $lockMode = null, $lockVersion = null)
  * @method Choix|null findOneBy(array $criteria, array $orderBy = null)
@@ -31,6 +31,20 @@ class ChoixRepository extends ServiceEntityRepository
         return $query->orderBy('c.id', 'DESC')
                         ->getQuery()
                         ->getResult();
+
+    }
+
+    public function findChoix(){
+
+        $query= $this->createQueryBuilder('c');
+
+        $query->select("PARTIAL c.{id,  label}");
+              
+             
+
+        return $query->orderBy('c.id', 'DESC')
+                        ->getQuery()
+                        ->getResult(AbstractQuery::HYDRATE_ARRAY);
 
     }
 }

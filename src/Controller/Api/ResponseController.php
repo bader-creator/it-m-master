@@ -60,7 +60,7 @@ class ResponseController extends AbstractController
     
             $reponse->setDateReponse($date);
     
-            $reponse->setType($element['type']);
+          
     
             if($request->get('type')==0){
                 if($element['reponse']){
@@ -165,6 +165,7 @@ class ResponseController extends AbstractController
            $noeud = $em->getRepository(NoeudAcceptance::class)->find($site['idTicket']);
            $noeud->setLongitude($site['longitude']);
            $noeud->setLatitude($site['latitude']);
+           $noeud->setStatut(1);
            $dateSites = new \DateTime($site['date']);
            $noeud->setDateCreation($dateSites);
           

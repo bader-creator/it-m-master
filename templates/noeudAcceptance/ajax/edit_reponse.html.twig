@@ -1,0 +1,670 @@
+
+<script type="text/javascript">
+
+/*----------------------------------------------------------------------*/
+/*             debut  modifier reponse-select de chaque question          */
+/*----------------------------------------------------------------------*/
+
+$(document).on("click","#show_reponse_question_select",function() {
+
+  $("#loader_reponse").removeClass("d-none");
+
+  $("input[name='current_value']").val('');
+
+  var current_value = $(this).data('value');
+
+  var id_question =$(this).data('id');
+
+  var type_question  =$(this).data('type');
+  
+  var list_reponse = $('select[name="list_reponse"]');
+  
+  jQuery.ajax({
+        type: "GET",
+        url: "{{ path('list_choix_page') }}",
+        data: 'data',
+        beforeSend:function(){
+            $("#modal_modification_reponse_select").modal("show");
+            $("body").css("opacity",0.4);
+        },
+        success: function(data){ 
+             $("#loader_reponse").addClass("d-none"); 
+
+            $("input[name='current_value']").val(current_value);
+
+            $('option', list_reponse).remove();
+
+            list_reponse.append('<option disabled selected>Selectionner un choix</option>');
+
+            $.each(data.data,function(key, value){
+
+                list_reponse.append('<option value="'+value.id+'" name="'+value.id+'" >'+value.label+'</option>');
+ 
+            }); 
+
+            list_reponse.select2();
+     
+        }, // end success
+        complete:function(){
+            $("body").css("opacity",1);
+        }
+
+    }); // end ajax
+
+    $("#confirmer_edit_answer").unbind('click');
+
+    $("#confirmer_edit_answer").click(function(){
+
+         var id_choix= $('#div_list_modif_reponse option:selected').attr('value');
+
+         if(id_choix == undefined){
+              var msg = "Vous devez choisir une réponse";
+              toastr.info(msg, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+         }else{
+          jQuery.ajax({
+              type: "POST",
+              url: "{{ path('edit_reponse_page') }}",
+              data:  {id_question:id_question,id_choix:id_choix} ,
+              dataType: "json", // Change this according to your response from the server.
+                  beforeSend:function(){
+                      $("#modal_modification_reponse_select").modal("hide");
+                      $(".body_loading").removeClass("d-none");
+                      $("body").css("opacity",0.4);
+                  },
+                  statusCode:{
+                      200:function(data){
+
+                        var row = $('tr[data-id="' + id_question + '"]');
+
+                        row.find("td").eq(1).html(data.value);
+
+                        $(".show_reponse_question_select"+id_question).data('value',data.value);
+                            var msg = data.msg;
+                             toastr.success(msg, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+                       
+                      }
+                       
+                    },
+                  complete:function(){
+                      $(".body_loading").addClass("d-none");
+                      $("body").css("opacity",1);
+                  }
+          }); // end ajax
+        }
+    }) ;
+
+
+}); // en document
+
+/*----------------------------------------------------------------------*/
+/*             fin  modifier reponse-select de chaque question          */
+/*----------------------------------------------------------------------*/
+
+
+
+/*----------------------------------------------------------------------*/
+/*             debut  modifier reponse-input de chaque question          */
+/*----------------------------------------------------------------------*/
+
+$(document).on("click","#show_reponse_question_input",function() {
+  $("#loader_reponse_input").removeClass("d-none");
+  $('#div_input_reponse').val('');
+  $("input[name='current_value']").val('');
+  
+  var current_value = $(this).data('value');
+ 
+  var id_question =$(this).data('id');
+
+
+
+  jQuery.ajax({
+        type: "GET",
+        data: 'data',
+        beforeSend:function(){
+            $("#modal_modification_reponse_input").modal("show");
+            $("body").css("opacity",0.4);
+        },
+        success: function(data){  
+            $("#loader_reponse_input").addClass("d-none");
+            $("input[name='current_value']").val(current_value);
+        }, // end success
+        complete:function(){
+            $("body").css("opacity",1);
+        }
+
+    }); // end ajax
+
+    $("#confirmer_edit_answer_input").unbind('click');
+
+    $("#confirmer_edit_answer_input").click(function(){
+
+         var reponse= $('#div_input_reponse').val();
+         console.log(reponse,'reponse')
+            if(reponse == ""){
+              var msg = "Vous devez choisir une réponse";
+              toastr.info(msg, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+         }else{
+          jQuery.ajax({
+              type: "POST",
+              url: "{{ path('edit_reponse_input_page') }}",
+              data:  {id_question:id_question,reponse:reponse} ,
+              dataType: "json", // Change this according to your response from the server.
+                  beforeSend:function(){
+                      $("#modal_modification_reponse_input").modal("hide");
+                      $(".body_loading").removeClass("d-none");
+                      $("body").css("opacity",0.4);
+                  },
+                  statusCode:{
+                      200:function(data){
+                       
+                        var row = $('tr[data-id="' + id_question + '"]');
+
+                        row.find("td").eq(1).html(data.value);
+
+                        $(".show_reponse_question_input"+id_question).data('value',data.value);
+                         var msg = data.msg;
+                         toastr.success(msg, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+
+                      }
+                  },
+                  complete:function(){
+                      $(".body_loading").addClass("d-none");
+                      $("body").css("opacity",1);
+                  }
+          }); // end ajax
+         }
+    }) ;
+
+
+}); // en document
+
+/*----------------------------------------------------------------------*/
+/*             fin  modifier reponse-input de chaque question          */
+/*----------------------------------------------------------------------*/
+
+
+
+
+/*----------------------------------------------------------------------*/
+/*             debut  Affichage tracability de chaque question          */
+/*----------------------------------------------------------------------*/
+
+$(document).on("click","#show_reponse_tracability",function() {
+   $("#body_tracability").html('');
+   var id_question = $(this).data('id');
+   $("#loader_tracability").removeClass("d-none");
+   var url = "{{ path('list_reponse_page') }}";
+   
+    $.ajax({
+        url: url,
+        data: {id_question: id_question},
+        type: "POST",
+        dataType: "json", // Change this according to your response from the server.
+        statusCode:{
+            200:function(response){
+                      $("#loader_tracability").addClass("d-none");
+                       $.each(response.data,function(key, value){
+                          
+                           $("#body_tracability").append('\  <div class="card card_reponse_'+value.id+'" style="width: 34rem;">\
+                                                    <div class="card-body">\
+                                                        <h4 class="card-title pull-left" style=" display: inline;"> \
+                                                                <img  src="/uploads/avatars/'+value.userCreator.path+'" alt="user" style=" border-radius: 50%" \
+                                                                width="50"\
+                                                                 height="50">\
+                                                                  </h4>\
+                                                                  <br>\
+                                                             <span class="badge badge-secondary pull-left"   style="display: inline;margin-left: 10px;"\
+                                                                 data-original-title="" style="padding:0px 10px; font-size:10px; cursor:pointer;">\
+                                                                 '+value.userCreator.lastName+' '+value.userCreator.firstName+'\
+                                                                </span>\
+                                                                 <a class="btn btn-danger btn-sm pull-right delete_item" data-id="'+value.id+'"  title="Supprimer">\
+                                                                <i class="ti-trash text " aria-hidden="true" style="color:white;"></i> \
+                                                            </a>\
+                                                                <br><br><br>\
+                                                               <span class="card-subtitle mb-2 text-muted">\
+                                                                 <span style="font-size:8px;"><strong>Réponse :</strong> '+value.valeur+'</span>\
+                                                                 </span >\
+                                                             </div>\
+                                                    </div>\
+                                            </div>\
+                                         ');
+
+                      
+                                        
+            }); 
+
+            }// end 200
+
+        }// end status code
+    }); //fin appel ajax
+
+
+
+});
+
+
+/*----------------------------------------------------------------------*/
+/*             fin  Affichage tracability de chaque question            */
+/*----------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------*/
+/*             debut  Affichage commentaire de chaque question          */
+/*----------------------------------------------------------------------*/
+
+$(document).on("click","#show_commentaire",function() {
+
+   $("#body_commentaire").html('');
+   $("#loader_comment").removeClass("d-none");
+    var id_question = $(this).data('id');
+
+   var url = "{{ path('list_commentaire_page') }}";
+  
+    $.ajax({
+        url: url,
+        data: {id_question: id_question},
+         type: "POST",
+        dataType: "json", // Change this according to your response from the server.
+        statusCode:{
+            200:function(response){
+
+              $("#loader_comment").addClass("d-none");
+
+                        if(response.data.length >0){
+                        
+             $.each(response.data,function(key, value){
+  
+
+                 $("#body_commentaire").append('\  <div class="card card_commentaire_'+value.id+'" style="width: 34rem;">\
+                                                    <div class="card-body">\
+                                                        <h4 class="card-title pull-left" style=" display: inline;"> \
+                                                                <img  src="/uploads/avatars/'+value.userCreator.path+'" alt="user" style=" border-radius: 50%" \
+                                                                width="50"\
+                                                                 height="50">\
+                                                                  </h4>\
+                                                                  <br>\
+                                                             <span class="badge badge-secondary pull-left"   style="display: inline;margin-left: 10px;"\
+                                                                 data-original-title="" style="padding:0px 10px; font-size:10px; cursor:pointer;">\
+                                                                 '+value.userCreator.lastName+' '+value.userCreator.firstName+'\
+                                                                </span>\
+                                                                 <a class="btn btn-danger btn-sm pull-right delete_item" data-id="'+value.id+'"  title="Supprimer">\
+                                                                <i class="ti-trash text " aria-hidden="true" style="color:white;"></i> \
+                                                            </a>\
+                                                                <br><br><br>\
+                                                               <span class="card-subtitle mb-2 text-muted">\
+                                                                 <span style="font-size:8px;"><strong>Commentaire :</strong> '+value.comment+'</span>\
+                                                                 </span >\
+                                                                 <span class="badge badge-warning pull-right" style="padding:5px 5px;font-size:7px; ">\
+                                                                 '+value.dateCommentaire.date.substring(0,19)+'\
+                                                                 </span>\
+                                                             </div>\
+                                                    </div>\
+                                            </div>\
+                    ');
+             
+           
+           });
+           }else {
+                 
+                  $("#body_commentaire").html('<div class="card" style="width: 34rem;">\
+                                                    <div class="card-body">\
+                                                    <span   style="display: inline;margin-left: 10px;"\
+                                                     data-original-title="" style="padding:0px 10px; font-size:10px; cursor:pointer;">\
+                                                                 <p>Aucun commentaire trouvé</p>\
+                                                     </span>\
+                                                    </div> \
+                                                     </div> \
+                                               ')
+            }
+
+  
+            },// end 200,
+            201:function(response){
+
+                        var msg = response.msg;
+
+                        toastr.error(msg, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+                        
+                      //  $("#body_commentaire").html('');
+                    }
+
+
+        }// end status code
+    }); //fin appel ajax
+
+
+
+
+});
+
+
+/*----------------------------------------------------------------------*/
+/*             fin  Affichage commentaire de chaque question            */
+/*----------------------------------------------------------------------*/
+
+
+
+/*----------------------------------------------------------------------*/
+/*             debut  delete commentaire de chaque question          */
+/*----------------------------------------------------------------------*/
+
+$(document).on("click",".delete_item",function() {
+
+ 
+  var id = $(this).data('id');
+
+   var url = "{{ path('delete_commentaire') }}";
+  
+    $.ajax({
+        url: url,
+        data: {id: id},
+         type: "POST",
+        dataType: "json", // Change this according to your response from the server.
+        statusCode:{
+            200:function(response){
+
+              var msg = response.msg;
+
+            $(".card_commentaire_"+id).addClass("d-none");
+
+            toastr.success(msg, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+        
+
+            } ,  // end 200,
+            201:function(response){
+
+                        var msg = response.msg;
+
+                        toastr.error(msg, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+                        
+                      //  $("#body_commentaire").html('');
+                    }
+ 
+        }// end status code
+    }); //fin appel ajax
+
+
+
+
+});
+
+
+/*----------------------------------------------------------------------*/
+/*             fin  delete commentaire de chaque question            */
+/*----------------------------------------------------------------------*/
+  
+
+
+
+/*----------------------------------------------------------------------*/
+/*             debut  add commentaire de chaque question          */
+/*----------------------------------------------------------------------*/
+$(document).on("click","#show_commentaire",function() {
+   $("#body_commentaire").html('');
+    var id_question = $(this).data('id');
+    console.log(id_question,'id')
+  
+    $(".div_commentaire").addClass("d-none");
+    $(".add_commentaire").click(function(){
+    $(".div_commentaire").removeClass("d-none");   
+    
+    $("#submit_commentaire").unbind('click');
+    $("#submit_commentaire").on("click", function() {
+      var comment= $("#input_commentaire").val();
+      console.log()
+      if(comment ==""){
+        var msg = "Vous devez saisir un commentaire";
+        toastr.info(msg, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+      }else{
+      var url = "{{ path('add_commentaire_page') }}";
+       $.ajax({
+            url: url,
+            data: {comment:comment,id_question:id_question},
+            type: "POST",
+            dataType: "json", // Change this according to your response from the server.
+            statusCode:{
+            200:function(response){
+                 
+              $("#body_commentaire").prepend('\  <div class="card card_commentaire_'+response.reponse+'" style="width: 34rem;">\
+                                                    <div class="card-body">\
+                                                        <h4 class="card-title pull-left" style=" display: inline;"> \
+                                                                <img  src="/uploads/avatars/'+response.path+'" alt="user" style=" border-radius: 50%" \
+                                                                width="50"\
+                                                                 height="50">\
+                                                                  </h4>\
+                                                                  <br>\
+                                                             <span class="badge badge-secondary pull-left"   style="display: inline;margin-left: 10px;"\
+                                                                 data-original-title="" style="padding:0px 10px; font-size:10px; cursor:pointer;">\
+                                                                 '+response.lastName+' '+response.firstName+'\
+                                                                </span>\
+                                                                 <a class="btn btn-danger btn-sm pull-right delete_item" data-id="'+response.reponse+'"  title="Supprimer">\
+                                                                <i class="ti-trash text " aria-hidden="true" style="color:white;"></i> \
+                                                            </a>\
+                                                                <br><br><br>\
+                                                               <span class="card-subtitle mb-2 text-muted">\
+                                                                 <span style="font-size:8px;"><strong>Commentaire :</strong> '+response.comment+'</span>\
+                                                                 </span >\
+                                                                 <span class="badge badge-warning pull-right" style="padding:5px 5px;font-size:7px; ">\
+                                                                 '+response.date.date.substring(0,19)+'\
+                                                                 </span>\
+                                                             </div>\
+                                                    </div>\
+                                            </div>\
+                    ');
+               var msg = response.msg;
+               toastr.success(msg, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+                
+              $(".div_commentaire").addClass("d-none");
+              $('#input_commentaire').val('');
+            
+          
+            }// end 200
+           }
+        }); //fin appel ajax
+      } 
+    });
+});
+
+});
+
+/*----------------------------------------------------------------------*/
+/*             fin  add commentaire de chaque question            */
+/*----------------------------------------------------------------------*/
+
+
+
+
+/*----------------------------------------------------------------------*/
+/*             debut  Affichage photo de chaque question          */
+/*----------------------------------------------------------------------*/
+
+$(document).on("click","#show_photo",function() {
+  
+    $(".carousel-inner").empty();
+     $("#input-file-now").val('');
+   $("#no-images").html('');
+     $("#loader_image").removeClass("d-none");
+  // $(".carousel-inner").html('');
+    var id_question = $(this).data('id');
+   
+   var url = "{{ path('list_photo_page') }}";
+  
+    $.ajax({
+        url: url,
+        data: {id_question: id_question},
+         type: "POST",
+        dataType: "json", // Change this according to your response from the server.
+        statusCode:{
+            200:function(response){
+            $("#loader_image").addClass("d-none");
+            if(response.data && response.data.length) {
+             $.each(response.data,function(key, value){
+                console.log(response.data,'dd')
+                      
+                   if(key==0)
+                    $(".carousel-inner").append(`
+                          <div class="carousel-item active">
+                            <div style="width: 450px;height: 300px;border: 3px solid #ccc;background: #eee; margin: auto; padding: 15px 25px;">
+                              <img src="/uploads/avatars/photos/`+value.path+`" class="d-block w-100" style =" width: 100%; height: 100%;" >
+                     
+                               <div style=" position: absolute; z-index: 1; position: absolute;text-align: center; font-family: Georgia; margin: 0 auto; left: 0;
+                                right: 0; top:80%; color: white; width: 70%;">
+                                   <center><b>`+value.dateInsertion.date.substring(0,19)+`</b></center>
+                               </div>
+                           </div> 
+                          </div>  
+                    `);
+                  else
+                    $(".carousel-inner").append(`
+                          <div class="carousel-item">
+                            <div style=" width:  450px;height: 300px;border: 3px solid #ccc;background: #eee; margin: auto; padding: 15px 25px;">
+                              <img src="/uploads/avatars/photos/`+value.path+`" style =" width: 100%; height: 100%;" class="d-block w-100" >
+                     
+                            <div style=" position: absolute; z-index: 1; position: absolute;text-align: center; font-family: Georgia; margin: 0 auto; left: 0;
+                            right: 0; top: 80%; color: white; width: 70%;">
+                              <center><b>`+value.dateInsertion.date.substring(0,19)+`</b></center>
+                            </div>
+                          </div> 
+                         </div>  
+                    `);
+                $('#carouselExampleSlidesOnly').carousel({
+                  interval: 1000
+                   })
+                
+                });
+          
+            } else {
+              $(".carousel-inner").html(`
+                          <div class="carousel-item active">
+                           <div style="  border-color: #666 #1c87c9;border-image: none; border-radius: 0 0 0 0;  border-style: solid;   border-width: 30px;">
+                               <img src="/uploads/avatars/photos/available.jpg" class="d-block w-100" style="width:200px" alt="">
+                           </div>
+                          </div>
+                    `);
+              $('#carouselExampleSlidesOnly').carousel({
+                  interval: 1000
+                   })
+            }
+ 
+
+  
+            },// end 200,
+            201:function(response){
+                        
+                      
+                        var msg = response.msg;
+
+                        toastr.error(msg, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+                       
+               
+                    }
+                 
+        }// end status code
+    }); //fin appel ajax
+
+
+
+
+});
+
+
+/*----------------------------------------------------------------------*/
+/*             fin  Affichage photo de chaque question            */
+/*----------------------------------------------------------------------*/
+
+
+
+
+/*----------------------------------------------------------------------*/
+/*             debut  add photo de chaque question          */
+/*----------------------------------------------------------------------*/
+$(document).on("click","#show_photo",function() {
+    var id_question = $(this).data('id');
+    console.log(id_question,'id')   
+    $("#submit_photo").unbind('click');
+    $("#submit_photo").on("click", function() {
+       
+            var form_upload = $("#form_edit_photo")[0];
+            console.log(form_upload,'form_upload')
+
+            var filename = $("#input-file-now").val();
+            console.log(filename,'filename')
+            var parts = filename.split(".");
+        
+            fileExt = parts[(parts.length-1)];
+            console.log(fileExt,'fileExt')
+            if(fileExt=="")
+            {
+                 toastr.warning("Veuillez choisir un photo !", {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+            }
+            else if(fileExt!="")
+            {
+                if ( fileExt !="png" && fileExt !="jpg" && fileExt!="jpeg" && fileExt !="PNG" && fileExt !="JPG" && fileExt!="JPEG" )
+                {
+                    toastr.warning("Les extensions autorisées sont: png , jpg et jpeg", {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+                }
+
+                var oFile = document.getElementById("input-file-now").files[0];
+
+                var size =  oFile.size*.0009765625;
+
+                if(size > 2048)
+                {
+                    toastr.info("La taille maximal autorisée est 2048 KiB", {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+                }
+                else {
+                    /*----------------- debut upload file -------------------*/
+                    console.log("ddd")
+
+                    var path = "{{ path('add_photo_page',{'id':'id'}) }}";
+
+                    var url = path.replace('id',id_question);
+                   
+                    $.ajax({
+                        url: url,
+                        data: new FormData(form_upload),
+                        type:"post",
+                        contentType:false,
+                        processData:false,
+                        cache:false,
+                        dataType:"json", // Change this according to your response from the server.
+                        beforeSend:function(){
+                            $("#modal_photo").modal("hide");
+                            $(".body_loading").removeClass("d-none");
+                            $("body").css("opacity",0.4);
+                        },
+                        statusCode: {
+                            200: function (reponse) {
+                                
+                                  var msg = reponse.msg;
+                                  toastr.success(msg, {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
+                                  
+
+                            },// fin 200
+   
+                        },// fin status code
+                        complete:function(){
+                            $(".body_loading").addClass("d-none");
+                            $("body").css("opacity",1);
+                        }
+                        
+                    });// fin appel ajax
+
+                    /*--------------------- fin upload file -------------------*/
+                }  
+            }
+        }); // end button uplod file
+          
+   // });
+
+
+});
+
+/*----------------------------------------------------------------------*/
+/*             fin  add photo de chaque question                        */
+/*----------------------------------------------------------------------*/
+
+
+
+</script>

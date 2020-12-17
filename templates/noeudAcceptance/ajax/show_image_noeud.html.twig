@@ -1,0 +1,49 @@
+
+<script type="text/javascript">
+
+/*----------------------------------------------------------------------*/
+/*             debut  Affichage photo noeud     */
+/*----------------------------------------------------------------------*/
+
+$(document).on("click",".show_photo_site",function() {
+  
+    $("#body-image").html('');
+    $("#loader_image").removeClass("d-none");
+    var path = $(this).data('path');
+     var date = $(this).data('date');
+    $.ajax({
+       
+        data: {path: path,date:date},
+         type: "POST",
+        dataType: "json", // Change this according to your response from the server.
+        statusCode:{
+            200:function(response){
+             $("#loader_image").addClass("d-none");
+             $("#body-image").append('\  <div class="card" style="width: 34rem;">\
+                                                    <div class="card-body">\
+                                                        <h4 class="card-title pull-left" style=" display: inline;"> \
+                                                         <div style=" height:300; width: 435px; border-color: #666 #1c87c9;border-image: none; border-radius: 0 0 0 0;  border-style: solid;   border-width: 30px;">\
+                                                                <img  src="/uploads/avatars/'+path+'" alt="noeud"  \
+                                                                width="375"\
+                                                                 height="300">\
+                                                         </div>\
+                                                        </h4>\
+                                                    </div>\ </div>\
+                                     ');
+            }
+                 
+        }// end status code
+    }); //fin appel ajax
+
+
+
+
+});
+
+
+/*----------------------------------------------------------------------*/
+/*             fin  Affichage photo noeud           */
+/*----------------------------------------------------------------------*/
+
+
+</script>

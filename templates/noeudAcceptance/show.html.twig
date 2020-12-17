@@ -3,34 +3,17 @@
 {% block title %} IT&M - Réponses fiches {% endblock %}
 
 
+
 {% block body %}
+
+ <link rel="stylesheet" type="text/css" href="{{ asset('template/assets/css/slider.css') }}">
+
     {{ parent() }}
-
-  
-    <section class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="bug-list-search-content">
-                        <form method="get" action="">
-                            <div class="position-relative">
-                                <input type="search" id="search-contacts" name="search_input" value="{{ app.request.get('search_input')}}" class="form-control" placeholder="Recherche avancée...">
-                                <div class="form-control-position">
-                                    <i class="fa fa-search text-size-base text-muted la-rotate-270"></i>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <section class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h2 >  {{noeudAcceptance.fiche.label}} </h2>
+                    <h5 style="font-weight:bold;" >  {{noeudAcceptance.fiche.label}} </h5>
                  
                 </div> 
 
@@ -54,20 +37,20 @@
                 <div class="card-body text-black">
                 
                       {% elseif noeudAcceptance.fiche.items is not null %}
-                                             
+                                                 
                             <div id="accordionWrap1" role="tablist" aria-multiselectable="true">
                                 <div class="card collapse-icon panel mb-0 box-shadow-0 border-0">
                                     {% for item in  noeudAcceptance.fiche.items %}
                                         <div id="heading-{{noeudAcceptance.fiche.id}}-{{item.id}}" role="tab" class="card-header border-bottom-blue-grey border-bottom-lighten-2">
-                                           <a data-toggle="collapse"  data-parent="#accordionWrap1" href="#accordion-{{noeudAcceptance.fiche.id}}-{{item.id}}" class="h6 blue">{{item.label }}</a> 
+                                           <a data-toggle="collapse"  data-parent="#accordionWrap1" href="#accordion-{{noeudAcceptance.fiche.id}}-{{item.id}}" class="h6 blue"><strong>{{item.label }}</strong></a> 
                                         </div>
 
 
                                         <div id="accordion-{{noeudAcceptance.fiche.id}}-{{item.id}}" role="tabpanel" aria-labelledby="heading-{{noeudAcceptance.fiche.id}}-{{item.id}}" class="collapse show" aria-expanded="true">
                                             <div class="card-body">
                                       {% for sousItem in item.sousItems %}
-                                        <div id="heading-{{ item.id}}-{{sousItem.id}}" role="tab" class="card-header border-bottom-blue-grey border-bottom-lighten-2">
-                                            <a data-toggle="collapse" data-parent="#accordionWrap1" href="#accordion-{{ item.id}}-{{sousItem.id}}" aria-expanded="true" aria-controls="accordion-{{ item.id}}-{{sousItem.id}}" class="h6 blue">{{sousItem.label }}</a>
+                                        <div id="heading-{{ item.id}}-{{sousItem.id}}"  role="tab" class="card-header border-bottom-blue-grey border-bottom-lighten-2">
+                                            <a data-toggle="collapse" data-parent="#accordionWrap1" href="#accordion-{{ item.id}}-{{sousItem.id}}" aria-expanded="true" aria-controls="accordion-{{ item.id}}-{{sousItem.id}}" class="h6 blue ;"><p style="font-family: Georgia, serif;">{{sousItem.label }}</p></a>
                                         </div> 
 
                                         <div id="accordion-{{item.id}}-{{sousItem.id}}" role="tabpanel" aria-labelledby="heading-{{item.id}}-{{sousItem.id}}" class="collapse show" aria-expanded="true">
@@ -79,23 +62,83 @@
                                                     <table class="display nowrap table table-hover  table-bordered" cellspacing="2" width="100%" style="font-size:13.5px;">
                                                         <thead>
                                                           <tr>
-                                                            <th style="font-weight: bold;" >Questions</th>
-                                                            <th style="font-weight: bold;">Réponses</th>
-                                                            <th style="text-align:center;">Actions</th>
+                                                            <th style="font-weight: bolder; background-color :#C8C8C8" >Questions</th>
+                                                            <th style="font-weight: bolder;background-color : #C8C8C8"><center>Réponses</center></th>
+                                                            {% if app.user and (is_granted('ROLE_MODIFIER_REPONSE') or is_granted('ROLE_AFFICHER_COMMENTAIRE') or is_granted('ROLE_AFFICHER_PHOTO') or is_granted('ROLE_AFFICHER_REPONSE')) %}
+                                                            <th style="text-align:center;font-weight: bolder;background-color : #C8C8C8">Actions</th>
+                                                            {% endif %}
                                                          </tr>
                                                         </thead>
                                                         <tbody>
-                                                        <tr>
-                                                          <td >  {% for question in sousItem.question %} <p class="card-text">{{question.label}}.</p>  {% endfor %} </td>
-                                                           <td >   </td> 
-                                                            <td >  </td>
-                                                            </tr>
+                                                     {% for question in sousItem.question %} 
+                                                        {% for response in question.reponses %} 
+                                                       
+                                                        <tr data-id="{{question.id}}">
+                                                               <td > <p class="card-text">{{question.label}}</p>  </td>
+                                                                {% if question.type == 0 %}
+                                                                 {% if response.choixReponse is not null %}
+                                                                   <td style=" width:15%; text-align:center;"> <p class="card-text">{{response.choixReponse.label}} </p></td> 
+                                                                 {% else %}
+                                                                   <td style=" width:15%;text-align:center;">  <p class="card-text"> </p> </td> 
+                                                                 {% endif %}
+                                                                {% elseif question.type == 1 %}
+                                                                 {% if response.reponse is not null %}
+                                                                   <td style=" width:15%;text-align:center;">  <p class="card-text">{{response.reponse}} </p> </td>
+                                                                 {% else %}
+                                                                  <td style=" width:15%;text-align:center;">  <p class="card-text"></p> </td>
+                                                                {% endif %}
+                                                               {% endif %}
+                                                               {% if app.user and (is_granted('ROLE_MODIFIER_REPONSE') or is_granted('ROLE_AFFICHER_COMMENTAIRE') or is_granted('ROLE_AFFICHER_PHOTO') or is_granted('ROLE_AFFICHER_REPONSE')) %}
+                                                              <td style=" width:15%;" > 
+
+                                                              <center>
+                                                                {% if app.user and is_granted('ROLE_MODIFIER_REPONSE') %}
+                                                       {% if question.type == 0 %}
+                                                                   {% if response.choixReponse is not null %}
+                                                                    <a class="btn btn-linkedin btn-sm show_reponse_question_select_{{question.id}}"    data-target="#modal_modification_reponse_select" id="show_reponse_question_select" data-value="{{response.choixReponse.label }}" data-type="{{question.type }}" data-id="{{question.id}}"   title="Modifier réponse"> <i class="fa fa-pencil-square-o text-white" ></i>
+                                                                    </a>
+                                                                    {% else %}
+                                                                    <a class="btn btn-linkedin btn-sm show_reponse_question_select_{{question.id}}"    data-target="#modal_modification_reponse_select" id="show_reponse_question_select" data-value="" data-type="{{question.type }}" data-id="{{question.id}}"   title="Modifier réponse"> <i class="fa fa-pencil-square-o text-white" ></i>
+                                                                    </a>
+                                                                     {% endif %}
+                                                                {% elseif question.type == 1 %}
+                                                                  {% if response.reponse is not null %}
+                                                                    <a class="btn btn-linkedin btn-sm show_reponse_question_input_{{question.id}}" data-target="#modal_modification_reponse_input" id="show_reponse_question_input" data-value="{{response.reponse }}"  data-id="{{question.id}}" data-type="{{question.type }}"    title="Modifier réponse"> <i class="fa fa-pencil-square-o text-white" ></i>
+                                                                    </a>
+                                                                    {% else %}
+                                                                         <a class="btn btn-linkedin btn-sm show_reponse_question_input_{{question.id}}" data-target="#modal_modification_reponse_input" id="show_reponse_question_input" data-value="{{response.reponse }}"  data-id="{{question.id}}" data-type="{{question.type }}"    title="Modifier réponse"> <i class="fa fa-pencil-square-o text-white" ></i>
+                                                                        </a>
+                                                                     {% endif %}
+                                    
+                                                                {% endif %}
+                                                                {% endif %}
+                                                                {% if app.user and is_granted('ROLE_AFFICHER_REPONSE') %}
+                                                                <a class="btn btn-warning btn-sm  " id="show_reponse_tracability" data-value="{{question.id }}"  data-id="{{question.id }}" data-toggle="modal"
+                                                                data-target="#modal_tracability_reponse"  style="margin-left:3px"><i class="fa fa-eye text-white" title="Traçabilité de réponses"></i>
+                                                                </a>
+                                                                {% endif %}
+                                                                 {% if app.user and is_granted('ROLE_AFFICHER_COMMENTAIRE') %}
+                                                                <a class="btn btn-danger btn-sm " id="show_commentaire"  data-id="{{question.id }}" data-toggle="modal"  data-target="#modal_commentaire"  style="margin-left:3px;"  title="afficher commentaires"><i class="fa fa-comment text-white"></i>
+                                                                </a>
+                                                                 {% endif %}
+                                                                 {% if app.user and is_granted('ROLE_AFFICHER_PHOTO') %}
+                                                                <a class="btn btn-success btn-sm " id="show_photo"  data-id="{{question.id }}" data-toggle="modal"  data-target="#modal_photo"  style="margin-left:3px;"   style="margin-left:3px"><i class="fa fa-file-image-o text-white" title="Afficher photos"></i>
+                                                                </a>
+                                                                 {% endif %}
+                                                               <center> 
+                                                
+                                                            </td>
+                                                        {% endif %}
+                                                        </tr>
+                                                            
+                                                    {% endfor %}
+                                                 {% endfor %}
                                                         </tbody>
 
                                                     </table>
                                                 </div>
 
-
+  
                                            
                                             </div>
                                         </div>
@@ -113,16 +156,14 @@
 
             </div>
            
-                        <div class="navigation pull-right" style="margin-left:20px;">
-                            {{ knp_pagination_render(reponses) }}
-                        </div>
+                      
                      </div><!-- end div table-responsive --> 
 
                     {% endif  %}
                 </div><!-- end div card-body -->
             </div><!-- end div card -->
         </div><!-- end div col-12 -->
-    </section><!-- end div section --> #}
+    </section><!-- end div section --> 
 
     <!--  start modal suppression data -->
 
@@ -148,6 +189,219 @@
     </div>
 
     <!--  end  modal suppression data -->
+
+
+
+ <!-- debut modal pour modifier reponse  select-->
+
+    <div id="modal_modification_reponse_select" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false"
+         data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-primary" id="myModalLabel">Changer réponse</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                   
+                     
+                    <div id="div_form_edit">
+
+                        <div class="form-group ">
+                            <label > Valeur actuel :</label>
+                            <input type="text" class=" form-control"  name="current_value" disabled>
+                        </div>
+
+                         <div class="d-none" id="loader_reponse" style="text-align:center">
+                           <img  src="{{ asset('uploads/avatars/default.gif') }}" >
+                         </div>
+                        <label for="type_bsc"> Liste des options : <span class="danger text-danger">*</span> </label>
+                        <div class="input-group" id="div_list_modif_reponse">
+                            <select class="custom-select form-control required"  name="list_reponse">
+                          
+                            </select>
+                        </div>
+                        <label id="error_modif_response" class="text-danger hide" >Ce champ est obligatoire.</label>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger " data-dismiss="modal" style="color:white;">Annuler</a>
+                    <a  class="btn btn-success " style="color:white;" id="confirmer_edit_answer">Confirmer</a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!-- fin modal pour modifier response select -->
+
+
+
+    <!-- debut modal pour modifier reponse input-->
+
+    <div id="modal_modification_reponse_input" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false"
+         data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-primary" id="myModalLabel">Changer réponse</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    
+                    <div id="div_form_edit">
+
+                        <div class="form-group ">
+                            <label > Valeur actuel :</label>
+                            <input type="text" class=" form-control"  name="current_value" disabled>
+                        </div>
+                          <div class="d-none" id="loader_reponse_input" style="text-align:center">
+                           <img  src="{{ asset('uploads/avatars/default.gif') }}" >
+                          </div>
+                        <label for="type_bsc"> Nouveau réponse : <span class="danger text-danger">*</span> </label>
+                              <input type="text" class=" form-control"  name="reponse" id="div_input_reponse" >
+                        <label id="error_modif_response" class="text-danger hide" >Ce champ est obligatoire.</label>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger " data-dismiss="modal" style="color:white;">Annuler</a>
+                    <a  class="btn btn-success " style="color:white;" id="confirmer_edit_answer_input">Confirmer</a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!-- fin modal pour modifier response -->
+
+
+    <!-- debut modal pour show reponse -->
+
+    <div id="modal_tracability_reponse" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false"
+         data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-primary" id="myModalLabel">Traçabilité des réponses</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+               <div class="modal-body" >
+                    <div class="d-none" id="loader_tracability" style="text-align:center">
+                        <img  src="{{ asset('uploads/avatars/default.gif') }}" >
+                     </div>
+                    <div id="body_tracability">
+                         
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!-- fin modal pour show response -->
+
+
+      <!-- debut modal pour show commentaire -->
+
+    <div id="modal_commentaire" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false"
+         data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-primary pull-right" id="myModalLabel">Commentaires</h4>
+            
+                    <a class="btn btn-success btn-sm pull-right add_commentaire"  style="margin-left: 9px;margin-top:3px"><i class="fa fa-plus text-white " title="Ajouter des commentaires"></i>
+                    </a>
+        
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+               <div class="modal-body" >
+
+                    <div class="form-group  div_commentaire" style="padding-bottom:5%">
+                          
+        
+                                <label > Commentaire :</label>
+                                <input type="text" id="input_commentaire" class=" form-control"  name="comment" />
+                                <br>
+                              <button type="button" class="btn btn-success pull-right" id="submit_commentaire" >Ajouter un commentaire</button> 
+                     
+                            
+                   </div>
+                   <br>
+                    <div class="d-none" id="loader_comment" style="text-align:center">
+                        <img  src="{{ asset('uploads/avatars/default.gif') }}" >
+                     </div>
+                    <div id="body_commentaire">
+                       
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!-- fin modal pour show commentaire -->
+
+
+      <!-- debut modal pour show photo -->
+
+    <div id="modal_photo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false"
+         data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-primary pull-right" id="myModalLabel">Gallery – Photo</h4>
+            
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+               <div class="modal-body" >
+
+                    <div class="form-group  div_photo"  style="padding-bottom:5%">
+
+                         <form method="post"  class="form_upload" id="form_edit_photo" enctype="multipart/form-data" novalidate >
+
+                                <input type="file" id="input-file-now"  name="input-file-upload" />
+                                 <a class="btn btn-success btn-sm waves-effect pull-right" style="color:white;" id="submit_photo">Importer</a>
+                        </form>
+                      
+                  
+                   </div>
+
+                   <hr style="height: 2px; color: #B0B0B0; background-color: #B0B0B0; width: 100%; border: none;">
+             <div class="d-none" id="loader_image" style="text-align:center">
+                <img  src="{{ asset('uploads/avatars/default.gif') }}" >
+             </div>
+           
+             <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+                      <div class="carousel-inner">
+                     
+                      </div>
+                      <a class="carousel-control-prev" href="#carouselExampleSlidesOnly" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                      </a>
+                      <a class="carousel-control-next" href="#carouselExampleSlidesOnly" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                      </a>
+             </div>
+             
+
+                  
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!-- fin modal pour show photo -->
 
 
 {% endblock %}
@@ -182,9 +436,9 @@
                 toastr.error('{{ flash_message }}', {positionClass: 'toast-top-center', containerId: 'toast-top-center'});
 
         {% endfor %}
+    </script> 
 
-
-    </script> #}
+    {% include('noeudAcceptance/ajax/edit_reponse.html.twig') %}
 
   
 
